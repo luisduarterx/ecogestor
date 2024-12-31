@@ -1,0 +1,107 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Popins", sans-serif;
+}
+body {
+}
+.initialLogin {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+.container-login {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+
+  justify-content: space-between;
+}
+.leftBanner {
+  background-color: #7376f3;
+  display: none;
+  width: 40%;
+  border-radius: 15px;
+}
+.boxRigth {
+  width: 100%;
+  position: relative;
+}
+.formLogin {
+  width: 100%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-direction: column;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -80%);
+}
+.logo img {
+  max-width: 200px;
+}
+.form {
+  width: 70%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.form > input,
+button {
+  padding: 0.5rem;
+  border: 1px solid #ecebeb;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.262); /* Sombra leve inicial */
+}
+.btn-green {
+  background-color: #31b355;
+  color: #fff;
+  border: 1px solid #279127;
+}
+.btn-disabled {
+  background-color: #cccccc; /* Cinza claro */
+  color: #666666; /* Texto em cinza escuro */
+  cursor: not-allowed; /* Cursor indicando que está desabilitado */
+  opacity: 0.6; /* Tornar visualmente mais apagado */
+}
+.form p {
+  color: #545353;
+  text-align: center;
+}
+.form p span {
+  font-weight: bold;
+  cursor: pointer;
+}
+p.link {
+  cursor: pointer;
+}
+p.link:hover {
+  text-decoration: underline;
+}
+@media screen and (max-width: 926px) and (min-width: 571px) {
+  .formLogin {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 926px) {
+  .leftBanner {
+    display: block;
+  }
+  .boxRigth {
+    width: 60%;
+  }
+  .formLogin {
+    width: 100%;
+  }
+}
+@media screen and (min-width: 1201px) {
+  .formLogin {
+    width: 70%;
+  }
+}
