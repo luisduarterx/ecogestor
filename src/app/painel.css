@@ -211,11 +211,79 @@ i {
   text-align: center; /* Centraliza o texto */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra opcional */
 }
+
 .compra {
   text-align: start;
 }
 .venda {
   text-align: end;
+}
+.mainHeader {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.headerSelectTransation {
+  display: flex;
+  justify-content: space-between;
+}
+.fa-search-gray {
+  color: #cccccc;
+}
+.fa-plus-green {
+  color: #31b355;
+}
+.inputSelectTransation {
+  display: flex;
+  align-items: center;
+}
+.inputSelectTransation label {
+  width: 20%;
+  max-width: 100px;
+}
+.inputSelectTransation i {
+  width: 10%;
+}
+
+.inputGroupTransation {
+  border-bottom: 1px solid #cccccc;
+  width: 70%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: 0.5rem;
+  position: relative;
+}
+.inputGroupTransation input {
+  border: none;
+  width: 95%;
+  padding: 0.5rem;
+  background-color: transparent;
+}
+.inputboxTransation:focus {
+  outline: none;
+}
+.inputFocus {
+  border-bottom: 1px solid rgb(128, 198, 247);
+}
+.listSearch {
+  width: 70%;
+  padding: 1rem;
+  background-color: #fff;
+  max-height: 300px;
+  overflow-y: auto; /* Permite rolagem vertical */
+  scrollbar-width: thin;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra opcional */
+}
+.listSearch ul {
+  list-style: none;
+}
+.listSearch ul li {
+  padding: 0.2rem;
+}
+.listSearch ul li:hover {
+  background-color: #f1f1f1;
 }
 @media screen and (max-width: 926px) and (min-width: 473px) {
 }
