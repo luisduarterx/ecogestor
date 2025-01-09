@@ -1,0 +1,111 @@
+.bg-blocked {
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  background-color: rgba(100, 100, 100, 0.141);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+}
+.modal {
+  background-color: #fff;
+  margin-top: 3rem;
+  width: 95%;
+  margin: auto;
+  border-radius: 12px;
+}
+.m-small {
+  width: 40% !important;
+}
+.middle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -150%);
+}
+.head-modal {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 1rem;
+  align-items: center;
+  border-bottom: 1px solid #f1f1f1;
+  padding-bottom: 1rem;
+}
+.head-modal span {
+  width: 95%;
+  text-align: center;
+  margin-left: 5%;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+.head-modal i {
+  width: 5%;
+  text-align: start;
+  font-size: 1rem;
+  font-weight: bold;
+}
+.end-modal {
+  display: flex;
+  justify-content: end;
+
+  align-items: center;
+  border-top: 1px solid #f1f1f1;
+  padding: 1rem;
+}
+.button-end-modal {
+  padding: 1rem;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: #6366f1;
+  color: #fff;
+  border-radius: 12px;
+  border: none;
+}
+.button-end-modal:hover {
+  background-color: #6365f1c2;
+}
+.campo {
+  display: flex;
+  flex-direction: column;
+
+  text-wrap: nowrap;
+}
+.campo label {
+  width: 100%;
+  font-weight: bold;
+}
+.campo input,
+select {
+  padding: 0.3rem;
+}
+.body-modal form {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  gap: 1rem;
+}
+
+@media screen and (max-width: 926px) and (min-width: 473px) {
+}
+
+@media screen and (min-width: 926px) {
+  .body-modal form {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .campo {
+    flex: 1;
+    min-width: 120px;
+  }
+  .modal {
+    width: 70%;
+  }
+  .large {
+    min-width: 50%;
+  }
+  .total {
+    min-width: 100%;
+  }
+}

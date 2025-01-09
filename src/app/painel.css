@@ -268,7 +268,8 @@ i {
   border-bottom: 1px solid rgb(128, 198, 247);
 }
 .listSearch {
-  width: 70%;
+  width: 95%;
+  margin: auto;
   padding: 1rem;
   background-color: #fff;
   max-height: 300px;
@@ -280,10 +281,74 @@ i {
   list-style: none;
 }
 .listSearch ul li {
+  cursor: pointer;
   padding: 0.2rem;
 }
 .listSearch ul li:hover {
   background-color: #f1f1f1;
+}
+.pSelected {
+  background-color: #f1f1f1;
+  border-radius: 4 px;
+  margin-bottom: 1px;
+  padding: 0.3rem;
+  align-items: center;
+}
+.pSelected i {
+  font-size: 0.6rem;
+  font-weight: bolder;
+  color: #5046e4;
+  margin-left: 3px;
+}
+.btn {
+  background-color: #6366f1;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+}
+.btn:hover {
+  background-color: #6365f1b1;
+}
+.headerOrders {
+  padding: 1rem;
+}
+.mainOrders {
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+.listOrders {
+  width: 100%;
+  overflow: scroll;
+}
+.listOrders tr td,
+th {
+  padding: 0.5rem;
+}
+.listOrders tr:nth-child(odd) {
+  background-color: #fcf6f6;
+}
+.listOrders tr td span {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  width: 100%;
+  display: block;
+  box-sizing: border-box;
+}
+.td-pago {
+  background-color: #31b355;
+  color: #fff;
+}
+.td-pendente {
+  background-color: #e3c733;
+  color: #fff;
+}
+.td-atrasado {
+  background-color: red;
+  color: #fff;
+}
+.td-status {
+  text-align: center;
 }
 @media screen and (max-width: 926px) and (min-width: 473px) {
 }
