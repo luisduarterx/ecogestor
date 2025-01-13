@@ -28,3 +28,26 @@ export type dataBanco = {
   conta?: string;
   pix?: string;
 };
+export type groupMateriais = {
+  id: number;
+  name: string;
+};
+export type materiais = {
+  id: number;
+  group: groupMateriais;
+  name: string;
+  price: number;
+};
+export type materiais_order = {
+  id: number;
+  material: string;
+  orderID: number;
+  amount: number;
+  price: number;
+};
+export type order = {
+  id: number;
+  cadastro: { id: number; name: string };
+  items: materiais_order[] | null;
+  totalPrice: number | 0;
+};

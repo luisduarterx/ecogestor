@@ -13,7 +13,7 @@ export default function Page() {
   };
 
   const lista = [
-    { id: 11111, name: "PADRAO" },
+    { id: 0, name: "Não Informado" },
     { id: 19, name: "FERNANDA DUARTE SOUZA" },
     { id: 88, name: "CARLA COSTA DUARTE" },
     { id: 83, name: "MARIA ALVES ALVES" },

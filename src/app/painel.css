@@ -316,11 +316,12 @@ i {
   width: 100%;
   padding: 1rem;
   box-sizing: border-box;
+  overflow-x: scroll;
 }
 .listOrders {
   width: 100%;
-  overflow: scroll;
 }
+
 .listOrders tr td,
 th {
   padding: 0.5rem;
@@ -350,11 +351,147 @@ th {
 .td-status {
   text-align: center;
 }
+.titleMain i {
+  margin-right: 10px;
+}
+.titleMain i:hover {
+  color: #3e36bb;
+}
+.titleMain {
+  display: flex;
+  text-align: center;
+  padding: 1rem;
+  color: #5046e4;
+}
+.data-order {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  border-bottom: 1px dashed #cccccc;
+}
+.data-order span {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-color: #f1f1f1;
+  border-radius: 4px;
+}
+span i {
+  font-size: 1rem;
+  text-align: center;
+  margin-left: 0.5rem;
+}
+.headerOrderForm {
+  padding: 1rem;
+}
+
+.headerOrderForm form {
+  display: flex;
+  flex-direction: column;
+
+  gap: 5px;
+}
+.headerOrderForm form .campo {
+  display: flex;
+  flex-direction: column;
+}
+.headerOrderForm form button {
+  text-align: center;
+}
+
+.campo {
+  width: 100%;
+}
+label {
+  font-weight: bolder;
+}
+.campo input {
+  padding: 0.5rem;
+}
+.c-large {
+  position: relative;
+}
+.listaMateriais {
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra opcional */
+  position: absolute;
+  width: 100%;
+  margin-top: 3.5rem;
+}
+.listaMateriais ul {
+  list-style: none;
+}
+.listaMateriais ul li {
+  padding: 0.3rem;
+}
+.listaMateriais ul li:hover {
+  background-color: #eae9e9cc;
+}
+.c-small {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.c-small button {
+  background-color: #31b355;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+.tableOrder table {
+  width: 100%;
+  border-collapse: collapse;
+}
+table .material {
+  width: 50%;
+}
+.tableOrder tbody tr:nth-child(odd) {
+  background-color: #8a8cec3c;
+}
+.tableOrder tbody tr:nth-child(even) {
+  background-color: #7879c270;
+}
+tbody td {
+  text-align: center;
+  border: 1px solid #f1f1f1;
+  padding: 0.4rem;
+}
+td.material {
+  text-align: start;
+}
+td.text {
+  text-align: end;
+  text-transform: uppercase;
+}
+tfoot td {
+  padding: 0.4rem;
+  text-align: center;
+  font-weight: bolder;
+}
+.td-ativo {
+  border: 1px solid #f1f1f1;
+}
+.text {
+  text-align: center;
+}
+
 @media screen and (max-width: 926px) and (min-width: 473px) {
 }
 @media screen and (min-width: px) {
 }
 @media screen and (min-width: 926px) {
+  .headerOrderForm form {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .campo {
+    width: 20%;
+  }
+  .c-large {
+    width: 50%;
+  }
   .navigationPainel {
     display: block;
   }
@@ -363,6 +500,9 @@ th {
   }
   .dash {
     width: 40%;
+  }
+  .c-small {
+    width: auto;
   }
 }
 @media screen and (min-width: 1201px) {
