@@ -1,30 +1,78 @@
 "use client";
 import { materiais, order } from "@/types/types";
-import { useEffect, useState } from "react";
-import { FaArrowLeft, FaCheck, FaEdit, FaPlus } from "react-icons/fa";
+import { KeyboardEvent, useEffect, useState } from "react";
+import { FaArrowLeft, FaCheck, FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { Array_materiais } from "@/app/auxiliar/materiais";
 import { FaX } from "react-icons/fa6";
 import ChangeRegister from "@/components/ModalChangeCadastro";
-
+import EditItems from "@/components/ModalEditItem";
+type items = {
+  material: string;
+  amount: number;
+  id: number;
+  orderID: number;
+  price: number;
+};
 export default function Page() {
   const [showMateriais, setShowMateriais] = useState(true);
   const [inputMaterial, setInputMaterial] = useState("");
-  const [inputAmount, setInputAmount] = useState<number>(0);
-  const [inputPrice, setInputPrice] = useState<number>(0);
+  const [inputAmount, setInputAmount] = useState<number | string>();
+  const [inputPrice, setInputPrice] = useState<number | string>();
   const [currentOrder, setCurrentOrder] = useState<order>({
     id: 4554,
     cadastro: {
       id: 45,
       name: "Luis Claudio",
     },
-    items: [],
+    items: [
+      {
+        material: "Perfil Limpo",
+        amount: 4,
+        id: 22,
+        orderID: 4554,
+        price: 10.5,
+      },
+      {
+        material: "Perfil Sujo",
+        amount: 19,
+        id: 24,
+        orderID: 4554,
+        price: 4.5,
+      },
+      {
+        material: "Cobre 2",
+        amount: 2,
+        id: 25,
+        orderID: 4554,
+        price: 41.0,
+      },
+    ],
     totalPrice: 0,
   });
   const [totalAmount, setTotalAmount] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [materialsFilter, setMateriaisFilter] = useState<materiais[]>([]);
+  const [materialsFilter, setMateriaisFilter] = useState<materiais[] | null>(
+    null
+  );
   const [mSelected, setMSelected] = useState<materiais | null>(null);
+  const [showModalRegister, setModalRegister] = useState(false);
+  const [showModalEditItem, setShowModalEditItem] = useState(false);
+  const [editingItem, setEditingItem] = useState<items>();
 
+  const closeModalRegister = () => {
+    setModalRegister(false);
+  };
+  const saveChangeRegister = (item: { id: number; name: string }) => {
+    setCurrentOrder((prevOrder) => ({
+      ...prevOrder,
+      cadastro: item,
+    }));
+    setModalRegister(false);
+  };
+  const closeModalEditItem = () => {
+    setShowModalEditItem(false);
+  };
+  const saveChangeItem = () => {};
   useEffect(() => {
     let calculateTotalAmount = currentOrder.items?.reduce(
       (prev, item) => prev + item.amount,
@@ -39,9 +87,15 @@ export default function Page() {
   }, [currentOrder.items]);
 
   useEffect(() => {
+    if (inputMaterial === "") {
+      setMateriaisFilter(null);
+    }
     const filter = Array_materiais.filter((item) => {
+      if (inputMaterial === "") {
+        return null;
+      }
       return (
-        item.id.toString().trim() === inputMaterial.trim() ||
+        item.id === Number(inputMaterial) ||
         item.name.toUpperCase().includes(inputMaterial.toUpperCase())
       );
     });
@@ -50,11 +104,25 @@ export default function Page() {
   }, [inputMaterial]);
   const selecionarMaterial = (x: materiais) => {
     setMSelected(x);
-    setMateriaisFilter([]);
     const price: number = x.price as number;
     setInputPrice(price);
+    setMateriaisFilter(null);
+  };
+  const selectInputMaterial = (e: KeyboardEvent) => {
+    if (e.key === "Enter" && materialsFilter?.length === 1) {
+      selecionarMaterial(materialsFilter[0]);
+      setInputMaterial("");
+    }
   };
   const addItemOrder = () => {
+    if (
+      typeof inputPrice !== "number" ||
+      !mSelected ||
+      typeof inputAmount !== "number"
+    ) {
+      alert("Preencha os campos corretamente");
+      return;
+    }
     const newItem = {
       id: 3,
       material: mSelected?.name as string,
@@ -68,13 +136,37 @@ export default function Page() {
     }));
     setMSelected(null);
     setInputMaterial("");
-    setInputAmount(0);
-    setInputPrice(0);
+    setInputAmount("");
+    setInputPrice("");
+  };
+  const removeIteminOrder = (id: number) => {
+    let filtro = currentOrder.items.filter((item) => {
+      return item.id !== id;
+    });
+
+    setCurrentOrder((prevOrder) => ({ ...prevOrder, items: filtro }));
+  };
+  const editarItem = (item: items) => {
+    setEditingItem(item);
+    setShowModalEditItem(true);
   };
   return (
     <>
       <div className="containerMain">
-        <ChangeRegister />
+        {showModalEditItem && (
+          <EditItems
+            item={editingItem as items}
+            close={closeModalEditItem}
+            saveChange={saveChangeItem}
+          />
+        )}
+        {showModalRegister && (
+          <ChangeRegister
+            saveChange={saveChangeRegister}
+            close={closeModalRegister}
+          />
+        )}
+
         <div className="headerOrder">
           <h3 className="titleMain">
             <i>
@@ -87,7 +179,7 @@ export default function Page() {
 
             <span>
               {currentOrder.cadastro.name}{" "}
-              <i className="edit">
+              <i className="edit" onClick={() => setModalRegister(true)}>
                 <FaEdit />
               </i>
             </span>
@@ -103,33 +195,39 @@ export default function Page() {
                       onClick={() => {
                         setMSelected(null);
                         setInputMaterial("");
+                        setInputPrice("");
                       }}
                     >
                       <FaX />
                     </i>
                   </span>
                 ) : (
-                  <input
-                    type="text"
-                    autoFocus
-                    value={inputMaterial}
-                    onChange={(e) => {
-                      setInputMaterial(e.target.value);
-                    }}
-                  />
-                )}
-
-                {materialsFilter.length !== 0 && (
-                  <div className="listaMateriais">
-                    <ul>
-                      {materialsFilter.map((item) => (
-                        <li onClick={() => selecionarMaterial(item)}>
-                          {" "}
-                          {item.name}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  <>
+                    <input
+                      type="text"
+                      autoFocus
+                      value={inputMaterial}
+                      onChange={(e) => {
+                        setInputMaterial(e.target.value);
+                      }}
+                      onKeyDown={(e) => selectInputMaterial(e)}
+                    />
+                    {materialsFilter && (
+                      <div className="listaMateriais">
+                        <ul>
+                          {materialsFilter?.map((item, key) => (
+                            <li
+                              key={key}
+                              onClick={() => selecionarMaterial(item)}
+                            >
+                              {" "}
+                              {item.name}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
               <div className="campo">
@@ -166,17 +264,34 @@ export default function Page() {
               <th>Qntd</th>
               <th>Preco</th>
               <th>Valor</th>
+              <th>Açao</th>
             </tr>
           </thead>
           <tbody>
             {currentOrder.items?.map((item) => (
               <>
-                <tr>
+                <tr className="line">
                   <td className="material">{item.material}</td>
                   <td>{item.amount.toFixed(1)}</td>
                   <td>{item.price.toFixed(2).replace(".", ",")}</td>
                   <td>
                     {(item.amount * item.price).toFixed(2).replace(".", ",")}
+                  </td>
+                  <td>
+                    <div className="btn-actions">
+                      <button
+                        className="btn edit-item"
+                        onClick={() => editarItem(item)}
+                      >
+                        <FaEdit />
+                      </button>
+                      <button
+                        className="btn delete-item"
+                        onClick={() => removeIteminOrder(item.id)}
+                      >
+                        <FaTrash />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               </>

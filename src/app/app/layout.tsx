@@ -20,6 +20,7 @@ export default function RootLayout({
   };
   return (
     <html lang="pt-BR">
+      <head></head>
       <body>
         <div className="painel">
           <Navigation menuOpen={showMenu} setMenu={setShowMenu}></Navigation>
