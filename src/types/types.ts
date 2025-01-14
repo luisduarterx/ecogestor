@@ -34,7 +34,7 @@ export type groupMateriais = {
 };
 export type materiais = {
   id: number;
-  group: groupMateriais;
+  group: string;
   name: string;
   price: number;
 };
@@ -48,6 +48,6 @@ export type materiais_order = {
 export type order = {
   id: number;
   cadastro: { id: number; name: string };
-  items: materiais_order[] | null;
+  items: materiais_order[];
   totalPrice: number | 0;
 };

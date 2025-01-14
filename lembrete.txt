@@ -1,0 +1,8 @@
+Terminar Pagina Pedido
+
+ALteração de fornecedor 
+Fechamento de Pedido
+Edicao de items
+Pesagem Bruta
+Alterar entre Fornecedor e Cliente (Compra/Venda
+)

@@ -407,6 +407,13 @@ label {
 .campo input {
   padding: 0.5rem;
 }
+.campo .input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.campo input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
 .c-large {
   position: relative;
 }

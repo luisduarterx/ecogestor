@@ -100,7 +100,7 @@ export default function Page() {
   }, [inputSearch]); // Dependência para executar quando inputSearch mudar
 
   const selecionarPessoa = (key: number) => {
-    // selecionar uma pessoa da lista de filtro
+    // Selecionar uma pessoa da lista de filtro
     const pessoa: lista[] = lista.filter((item) => {
       return item.id === key;
     });
