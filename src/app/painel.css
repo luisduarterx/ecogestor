@@ -468,6 +468,13 @@ tbody td {
 td.material {
   text-align: start;
 }
+.info-material {
+  display: flex;
+  flex-direction: column;
+}
+.info-material p {
+  font-size: 0.7rem;
+}
 td.text {
   text-align: end;
   text-transform: uppercase;
@@ -483,16 +490,16 @@ tfoot td {
 .text {
   text-align: center;
 }
-.edit-item {
-  background-color: green;
+.green {
+  background-color: #31b355;
 }
-.edit-item:hover {
-  background-color: rgb(1, 85, 1);
+.green:hover {
+  background-color: #2a9a4a;
 }
-.delete-item {
+.red {
   background-color: red;
 }
-.delete-item:hover {
+.red:hover {
   background-color: rgb(192, 2, 2);
 }
 .btn-actions {
@@ -501,7 +508,14 @@ tfoot td {
   gap: 4px;
   flex-direction: column;
 }
-
+.container-foot-btns {
+  width: 95%;
+  margin: auto;
+  margin-top: 1rem;
+  justify-content: end;
+  gap: 1rem;
+  display: flex;
+}
 @media screen and (max-width: 926px) and (min-width: 473px) {
 }
 @media screen and (min-width: 800px) {

@@ -1,30 +1,70 @@
 import "@/app/modal.css";
+import { materiais_order } from "@/types/types";
 import { useEffect, useState } from "react";
 import { FaX } from "react-icons/fa6";
 type Props = {
   close: () => void;
-  saveChange: () => void;
-  item: {
-    material: string;
-    amount: number;
-    id: number;
-    orderID: number;
-    price: number;
-  };
+  saveChange: (item: materiais_order) => void;
+  item: materiais_order;
 };
 export default function EditItems({ item, close, saveChange }: Props) {
   const [inputMaterial, setInputMaterial] = useState("");
-  const [inputAmount, setInputAmount] = useState<number | string>("");
   const [inputPrice, setInputPrice] = useState<number | string>("");
   const [inputPesoBruto, setInputPesoBruto] = useState<number | string>("");
   const [inputTara, setInputTara] = useState<number | string>("");
   const [inputImpureza, setInputImpureza] = useState<number | string>("");
 
+  const calcularAmount = () => {
+    const bruto = Number(inputPesoBruto) || 0;
+    const tara = Number(inputTara) || 0;
+    const impureza = Number(inputImpureza) || 0;
+    return bruto - tara - impureza > 0 ? bruto - tara - impureza : 0;
+  };
+  const saveEdit = () => {
+    const tara = Number(inputTara) || 0;
+    const impureza = Number(inputImpureza) || 0;
+
+    const ItemEdited: materiais_order = {
+      id: item.id,
+      material: inputMaterial,
+      price: inputPrice as number,
+      orderID: item.orderID,
+      tara: tara,
+      impureza: impureza,
+      amount: calcularAmount(),
+    };
+
+    if (ItemEdited.amount === 0) {
+      alert("Erro");
+      return;
+    }
+
+    saveChange(ItemEdited);
+  };
+
   useEffect(() => {
     setInputMaterial(item.material);
-    setInputAmount(item.amount);
-    setInputPesoBruto(item.amount);
     setInputPrice(item.price);
+    //sempre
+
+    if (!item.tara && !item.impureza) {
+      setInputPesoBruto(item.amount);
+    }
+
+    if (item.tara && item.impureza) {
+      setInputPesoBruto(item.amount + item.impureza + item.tara);
+      setInputImpureza(item.impureza);
+      setInputTara(item.tara);
+      return;
+    }
+    if (item.tara) {
+      setInputTara(item.tara);
+      setInputPesoBruto(item.amount + item.tara);
+    }
+    if (item.impureza) {
+      setInputImpureza(item.impureza);
+      setInputPesoBruto(item.amount + item.impureza);
+    }
   }, [item]);
   useEffect;
 
@@ -41,11 +81,7 @@ export default function EditItems({ item, close, saveChange }: Props) {
           <div className="editGroupItem">
             <div className="campo large">
               <label>Material</label>
-              <input
-                type="text"
-                value={inputMaterial}
-                onChange={(e) => setInputMaterial(e.target.value)}
-              />
+              <span>{item.material}</span>
             </div>
             <div className="campo ">
               <label>Preço</label>
@@ -58,35 +94,32 @@ export default function EditItems({ item, close, saveChange }: Props) {
             <div className="campo">
               <label>Peso Bruto</label>
               <input
-                type="text"
+                type="number"
                 value={inputPesoBruto}
                 onChange={(e) => setInputPesoBruto(e.target.value)}
               />
             </div>
             <div className="campo">
               <label>Tara</label>
+
               <input
-                type="text"
+                type="number"
                 value={inputTara}
                 onChange={(e) => setInputTara(e.target.value)}
               />
             </div>
             <div className="campo">
-              <label>Impureza</label>
+              <label>Impureza(kg)</label>
               <input
-                type="text"
+                type="number"
                 value={inputImpureza}
                 onChange={(e) => setInputImpureza(e.target.value)}
               />
             </div>
-            <div className="campo">
-              <label>Liquido</label>
-              <input type="text" value={inputAmount} />
-            </div>
           </div>
         </div>
         <div className="end-modal">
-          <button onClick={() => saveChange}>Salvar Alteracão</button>
+          <button onClick={() => saveEdit()}>Salvar Alteracão</button>
         </div>
       </div>
     </div>

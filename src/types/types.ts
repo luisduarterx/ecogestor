@@ -39,14 +39,17 @@ export type materiais = {
   price: number;
 };
 export type materiais_order = {
-  id: number;
   material: string;
-  orderID: number;
   amount: number;
+  id: number;
+  orderID: number;
   price: number;
+  tara?: number;
+  impureza?: number;
 };
 export type order = {
   id: number;
+  typeOrder: "buy" | "sell";
   cadastro: { id: number; name: string };
   items: materiais_order[];
   totalPrice: number | 0;

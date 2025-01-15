@@ -1,29 +1,25 @@
 "use client";
-import { materiais, order } from "@/types/types";
+import { materiais, materiais_order, order } from "@/types/types";
 import { KeyboardEvent, useEffect, useState } from "react";
 import { FaArrowLeft, FaCheck, FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { Array_materiais } from "@/app/auxiliar/materiais";
 import { FaX } from "react-icons/fa6";
 import ChangeRegister from "@/components/ModalChangeCadastro";
 import EditItems from "@/components/ModalEditItem";
-type items = {
-  material: string;
-  amount: number;
-  id: number;
-  orderID: number;
-  price: number;
-};
+
 export default function Page() {
   const [showMateriais, setShowMateriais] = useState(true);
   const [inputMaterial, setInputMaterial] = useState("");
-  const [inputAmount, setInputAmount] = useState<number | string>();
-  const [inputPrice, setInputPrice] = useState<number | string>();
+  const [inputAmount, setInputAmount] = useState<number | string>("");
+  const [inputPrice, setInputPrice] = useState<number | string>("");
+  const [inputValue, setInputValue] = useState<number | string>("");
   const [currentOrder, setCurrentOrder] = useState<order>({
     id: 4554,
     cadastro: {
       id: 45,
       name: "Luis Claudio",
     },
+    typeOrder: "buy",
     items: [
       {
         material: "Perfil Limpo",
@@ -31,6 +27,7 @@ export default function Page() {
         id: 22,
         orderID: 4554,
         price: 10.5,
+        tara: 2,
       },
       {
         material: "Perfil Sujo",
@@ -46,6 +43,23 @@ export default function Page() {
         orderID: 4554,
         price: 41.0,
       },
+      {
+        material: "Estamparia de Aluminio Sujo",
+        amount: 3,
+        id: 26,
+        orderID: 4554,
+        price: 3.5,
+        impureza: 1,
+      },
+      {
+        material: "Ferro",
+        amount: 190,
+        id: 27,
+        orderID: 4554,
+        price: 1,
+        tara: 4,
+        impureza: 10,
+      },
     ],
     totalPrice: 0,
   });
@@ -57,7 +71,7 @@ export default function Page() {
   const [mSelected, setMSelected] = useState<materiais | null>(null);
   const [showModalRegister, setModalRegister] = useState(false);
   const [showModalEditItem, setShowModalEditItem] = useState(false);
-  const [editingItem, setEditingItem] = useState<items>();
+  const [editingItem, setEditingItem] = useState<materiais_order>();
 
   const closeModalRegister = () => {
     setModalRegister(false);
@@ -72,7 +86,18 @@ export default function Page() {
   const closeModalEditItem = () => {
     setShowModalEditItem(false);
   };
-  const saveChangeItem = () => {};
+  const saveChangeItem = (item: materiais_order) => {
+    const updatedItems = currentOrder.items.map((prev) =>
+      prev.id === item.id ? item : prev
+    );
+    setCurrentOrder((prev) => ({
+      ...prev,
+      items: updatedItems,
+    }));
+    console.log(updatedItems);
+    console.log(item);
+    setShowModalEditItem(false);
+  };
   useEffect(() => {
     let calculateTotalAmount = currentOrder.items?.reduce(
       (prev, item) => prev + item.amount,
@@ -146,16 +171,17 @@ export default function Page() {
 
     setCurrentOrder((prevOrder) => ({ ...prevOrder, items: filtro }));
   };
-  const editarItem = (item: items) => {
+  const editarItem = (item: materiais_order) => {
     setEditingItem(item);
     setShowModalEditItem(true);
   };
+
   return (
     <>
       <div className="containerMain">
         {showModalEditItem && (
           <EditItems
-            item={editingItem as items}
+            item={editingItem as materiais_order}
             close={closeModalEditItem}
             saveChange={saveChangeItem}
           />
@@ -175,7 +201,9 @@ export default function Page() {
             Pedido #{currentOrder.id}
           </h3>
           <div className="data-order">
-            <label>Fornecedor:</label>
+            <label>
+              {currentOrder.typeOrder === "buy" ? "Fornecedor" : "Cliente"}:
+            </label>
 
             <span>
               {currentOrder.cadastro.name}{" "}
@@ -246,6 +274,17 @@ export default function Page() {
                   onChange={(e) => setInputPrice(Number(e.target.value))}
                 />
               </div>
+              {currentOrder.typeOrder === "sell" && (
+                <div className="campo">
+                  <label>Valor:</label>
+                  <input
+                    type="number"
+                    value={inputValue}
+                    onChange={(e) => setInputValue(Number(e.target.value))}
+                  />
+                </div>
+              )}
+
               <div className=" c-small">
                 <label>&nbsp;</label>
                 <button type="button" onClick={addItemOrder}>
@@ -271,7 +310,20 @@ export default function Page() {
             {currentOrder.items?.map((item) => (
               <>
                 <tr className="line">
-                  <td className="material">{item.material}</td>
+                  <td className="material">
+                    <div className="info-material">
+                      {item.material}
+
+                      <p>
+                        {item.tara && item.tara !== 0
+                          ? `TARA: ${item.tara.toFixed(1)}kg `
+                          : ""}
+                        {item.impureza && item.impureza !== 0
+                          ? `Impureza: ${item.impureza.toFixed(1)}kg`
+                          : ""}
+                      </p>
+                    </div>
+                  </td>
                   <td>{item.amount.toFixed(1)}</td>
                   <td>{item.price.toFixed(2).replace(".", ",")}</td>
                   <td>
@@ -280,13 +332,13 @@ export default function Page() {
                   <td>
                     <div className="btn-actions">
                       <button
-                        className="btn edit-item"
+                        className="btn green"
                         onClick={() => editarItem(item)}
                       >
                         <FaEdit />
                       </button>
                       <button
-                        className="btn delete-item"
+                        className="btn red"
                         onClick={() => removeIteminOrder(item.id)}
                       >
                         <FaTrash />
@@ -307,8 +359,10 @@ export default function Page() {
           </tfoot>
         </table>
       </div>
-      <button>Excluir</button>
-      <button>Finalizar Pedido</button>
+      <div className="container-foot-btns">
+        <button className="btn red">Excluir</button>
+        <button className="btn green">Finalizar Pedido</button>
+      </div>
     </>
   );
 }

@@ -1,8 +1,8 @@
 Terminar Pagina Pedido
 
-ALteração de fornecedor 
-Fechamento de Pedido
-Edicao de items
-Pesagem Bruta
+Fechamento de Pedido 
+
 Alterar entre Fornecedor e Cliente (Compra/Venda
 )
+
+criar conexao entre input de Preco e Valor com a haver com a quantidade

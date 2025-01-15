@@ -106,6 +106,12 @@
 .campo i {
   font-size: 0.7rem;
 }
+.campo span {
+  background-color: #f1f1f1;
+  padding: 0.4rem;
+  color: #545050;
+}
+
 .campo input,
 select {
   padding: 0.3rem;
