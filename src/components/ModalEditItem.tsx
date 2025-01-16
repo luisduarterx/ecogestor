@@ -23,11 +23,12 @@ export default function EditItems({ item, close, saveChange }: Props) {
   const saveEdit = () => {
     const tara = Number(inputTara) || 0;
     const impureza = Number(inputImpureza) || 0;
+    const price = Number(inputPrice);
 
     const ItemEdited: materiais_order = {
       id: item.id,
       material: inputMaterial,
-      price: inputPrice as number,
+      price: price,
       orderID: item.orderID,
       tara: tara,
       impureza: impureza,

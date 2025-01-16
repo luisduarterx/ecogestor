@@ -27,6 +27,7 @@ export default function Page() {
         id: 22,
         orderID: 4554,
         price: 10.5,
+
         tara: 2,
       },
       {
@@ -49,6 +50,7 @@ export default function Page() {
         id: 26,
         orderID: 4554,
         price: 3.5,
+
         impureza: 1,
       },
       {
@@ -57,6 +59,7 @@ export default function Page() {
         id: 27,
         orderID: 4554,
         price: 1,
+
         tara: 4,
         impureza: 10,
       },
@@ -98,6 +101,20 @@ export default function Page() {
     console.log(item);
     setShowModalEditItem(false);
   };
+  // useEffect(() => {
+  //   //Monitora mudancas dos Inputs
+  //   if (currentOrder.typeOrder === "sell") {
+  //     if (inputAmount && inputPrice) {
+  //       setInputValue((Number(inputAmount) * Number(inputPrice)).toFixed(2));
+  //     }
+  //   }
+  // }, [inputAmount, inputPrice]);
+  // useEffect(() => {
+  //   if (inputAmount && inputValue) {
+  //     setInputPrice((Number(inputValue) / Number(inputAmount)).toFixed(2));
+  //   }
+  // }, [inputValue]);
+
   useEffect(() => {
     let calculateTotalAmount = currentOrder.items?.reduce(
       (prev, item) => prev + item.amount,
@@ -129,7 +146,11 @@ export default function Page() {
   }, [inputMaterial]);
   const selecionarMaterial = (x: materiais) => {
     setMSelected(x);
-    const price: number = x.price as number;
+    const price: number =
+      currentOrder.typeOrder === "sell"
+        ? (x.priceSell as number)
+        : (x.price as number);
+
     setInputPrice(price);
     setMateriaisFilter(null);
   };
@@ -148,12 +169,16 @@ export default function Page() {
       alert("Preencha os campos corretamente");
       return;
     }
+
+    if (inputValue !== "") {
+    }
+
     const newItem = {
       id: 3,
       material: mSelected?.name as string,
       orderID: currentOrder.id,
       amount: inputAmount as number,
-      price: inputPrice as number,
+      price: inputValue ? (inputValue as number) / inputAmount : inputPrice,
     };
     setCurrentOrder((prevOrder) => ({
       ...prevOrder,
@@ -163,6 +188,7 @@ export default function Page() {
     setInputMaterial("");
     setInputAmount("");
     setInputPrice("");
+    setInputValue("");
   };
   const removeIteminOrder = (id: number) => {
     let filtro = currentOrder.items.filter((item) => {
@@ -307,46 +333,43 @@ export default function Page() {
             </tr>
           </thead>
           <tbody>
-            {currentOrder.items?.map((item) => (
-              <>
-                <tr className="line">
-                  <td className="material">
-                    <div className="info-material">
-                      {item.material}
-
-                      <p>
-                        {item.tara && item.tara !== 0
-                          ? `TARA: ${item.tara.toFixed(1)}kg `
-                          : ""}
-                        {item.impureza && item.impureza !== 0
-                          ? `Impureza: ${item.impureza.toFixed(1)}kg`
-                          : ""}
-                      </p>
-                    </div>
-                  </td>
-                  <td>{item.amount.toFixed(1)}</td>
-                  <td>{item.price.toFixed(2).replace(".", ",")}</td>
-                  <td>
-                    {(item.amount * item.price).toFixed(2).replace(".", ",")}
-                  </td>
-                  <td>
-                    <div className="btn-actions">
-                      <button
-                        className="btn green"
-                        onClick={() => editarItem(item)}
-                      >
-                        <FaEdit />
-                      </button>
-                      <button
-                        className="btn red"
-                        onClick={() => removeIteminOrder(item.id)}
-                      >
-                        <FaTrash />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </>
+            {currentOrder.items?.map((item, key) => (
+              <tr key={key} className="line">
+                <td className="material">
+                  <div className="info-material">
+                    {item.material}
+                    <p>
+                      {item.tara && item.tara !== 0
+                        ? `TARA: ${item.tara.toFixed(1)}kg `
+                        : ""}
+                      {item.impureza && item.impureza !== 0
+                        ? `Impureza: ${item.impureza.toFixed(1)}kg`
+                        : ""}
+                    </p>
+                  </div>
+                </td>
+                <td>{item.amount.toFixed(1)}</td>
+                <td>{item.price.toFixed(2).replace(".", ",")}</td>
+                <td>
+                  {(item.amount * item.price).toFixed(2).replace(".", ",")}
+                </td>
+                <td>
+                  <div className="btn-actions">
+                    <button
+                      className="btn green"
+                      onClick={() => editarItem(item)}
+                    >
+                      <FaEdit />
+                    </button>
+                    <button
+                      className="btn red"
+                      onClick={() => removeIteminOrder(item.id)}
+                    >
+                      <FaTrash />
+                    </button>
+                  </div>
+                </td>
+              </tr>
             ))}
           </tbody>
           <tfoot>
