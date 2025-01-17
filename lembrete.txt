@@ -6,3 +6,5 @@ Alterar entre Fornecedor e Cliente (Compra/Venda
 )
 
 criar conexao entre input de Preco e Valor com a haver com a quantidade
+
+Mostrar na pagina do pedido, tipo de tabela utilizada pelo fornecedor
