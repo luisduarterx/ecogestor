@@ -7,6 +7,7 @@ export const Array_materiais: materiais[] = [
     group: "Plasticos",
     price: 1.0,
     priceSell: 1.5,
+    status: true,
   },
   {
     id: 2,
@@ -14,6 +15,7 @@ export const Array_materiais: materiais[] = [
     group: "Plasticos",
     price: 3.0,
     priceSell: 4.0,
+    status: true,
   },
   {
     id: 3,
@@ -21,6 +23,7 @@ export const Array_materiais: materiais[] = [
     group: "Plasticos",
     price: 4.5,
     priceSell: 5.6,
+    status: true,
   },
   {
     id: 4,
@@ -28,6 +31,7 @@ export const Array_materiais: materiais[] = [
     group: "Ferrosos",
     price: 1.0,
     priceSell: 1.5,
+    status: true,
   },
   {
     id: 5,
@@ -35,6 +39,7 @@ export const Array_materiais: materiais[] = [
     group: "Metais Nobres",
     price: 23.0,
     priceSell: 31,
+    status: true,
   },
   {
     id: 6,
@@ -42,6 +47,7 @@ export const Array_materiais: materiais[] = [
     group: "Metais Nobres",
     price: 40.0,
     priceSell: 50,
+    status: true,
   },
   {
     id: 7,
@@ -49,5 +55,6 @@ export const Array_materiais: materiais[] = [
     group: "Metais Nobres",
     price: 39.55,
     priceSell: 48,
+    status: true,
   },
 ];

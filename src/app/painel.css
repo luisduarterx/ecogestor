@@ -401,6 +401,25 @@ span i {
 .campo {
   width: 100%;
 }
+.campo-search {
+  display: flex;
+  width: 100%;
+  border: 1px solid #c1c1c1;
+  border-style: none none solid none;
+}
+.campo-search i {
+  display: flex;
+  align-items: center;
+  color: #ccc;
+  font-size: 1rem;
+}
+.campo-search input {
+  width: 100%;
+  border: none;
+  text-indent: 0.5rem;
+  outline: none;
+  padding: 0.7rem;
+}
 label {
   font-weight: bolder;
 }
@@ -447,7 +466,11 @@ label {
   justify-content: center;
   align-items: center;
 }
-.tableOrder table {
+table .sm-hidden {
+  display: none;
+}
+.tableOrder table,
+table {
   width: 100%;
   border-collapse: collapse;
 }
@@ -455,10 +478,10 @@ table .material {
   width: 50%;
 }
 .tableOrder tbody tr:nth-child(odd) {
-  background-color: #8a8cec3c;
+  background-color: #e9e9ff;
 }
 .tableOrder tbody tr:nth-child(even) {
-  background-color: #7879c270;
+  background-color: #f8f8ff;
 }
 tbody td {
   text-align: center;
@@ -512,15 +535,44 @@ tfoot td {
   width: 95%;
   margin: auto;
   margin-top: 1rem;
+  flex-direction: column;
   justify-content: end;
   gap: 1rem;
   display: flex;
 }
+.headerMateriais {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-bottom: 1px solid #f1f1f1;
+  margin-bottom: 1rem;
+
+  justify-content: start;
+}
+
 @media screen and (max-width: 926px) and (min-width: 473px) {
 }
 @media screen and (min-width: 800px) {
+  table .sm-hidden {
+    display: block;
+  }
   .btn-actions {
     flex-direction: row;
+  }
+  .container-foot-btns {
+    flex-direction: row;
+  }
+  .campo-search {
+    width: 40%;
+    max-width: 400px;
+    min-width: 250px;
+  }
+  .headerMateriais {
+    flex-direction: row;
+    gap: 1rem;
+  }
+  .headerMateriais .campo {
+    max-width: 250px;
   }
 }
 @media screen and (min-width: 926px) {
@@ -531,6 +583,7 @@ tfoot td {
   .campo {
     width: 20%;
   }
+
   .c-large {
     width: 50%;
   }

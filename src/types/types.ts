@@ -38,6 +38,7 @@ export type materiais = {
   name: string;
   price: number;
   priceSell: number;
+  status: boolean;
 };
 export type materiais_order = {
   material: string;
