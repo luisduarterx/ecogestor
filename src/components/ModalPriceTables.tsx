@@ -1,5 +1,6 @@
 import { FaX } from "react-icons/fa6";
 import "@/app/modal.css";
+import { FaPrint, FaShoePrints } from "react-icons/fa";
 type Props = {
   close: () => void;
 };
@@ -15,7 +16,10 @@ export default function PriceTables({ close }: Props) {
         </div>
         <div className="body-modal"></div>
         <div className="end-modal">
-          <button>End</button>
+          <i>
+            <FaPrint />
+          </i>
+          <button className="button-end-modal">End</button>
         </div>
       </div>
     </div>

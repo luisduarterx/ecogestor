@@ -93,7 +93,10 @@ export default function ChangeRegister({ close, saveChange }: Props) {
           </div>
         </div>
         <div className="end-modal">
-          <button onClick={() => saveChange(NRSelected as lista)}>
+          <button
+            className="button-end-modal"
+            onClick={() => saveChange(NRSelected as lista)}
+          >
             Salvar Alteracão
           </button>
         </div>

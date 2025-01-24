@@ -13,7 +13,7 @@
   margin-top: 3rem;
   width: 95%;
   margin: auto;
-  border-radius: 12px;
+  border-radius: 10px;
 }
 .m-small {
   width: 40% !important;
@@ -29,8 +29,9 @@
   justify-content: space-between;
   padding-top: 1rem;
   align-items: center;
-  border-bottom: 1px solid #f1f1f1;
+
   padding-bottom: 1rem;
+  color: #7e7c7c;
 }
 .head-modal span {
   width: 95%;
@@ -41,28 +42,33 @@
 }
 .head-modal i {
   width: 5%;
+  color: #000;
   text-align: start;
   font-size: 1rem;
   font-weight: bold;
 }
 .body-modal {
-  padding: 2rem;
+  padding: 1rem;
+}
+.body-modal select {
+  border: 1px solid black;
 }
 .end-modal {
   display: flex;
   justify-content: end;
-
+  gap: 1rem;
+  text-align: center;
   align-items: center;
-  border-top: 1px solid #f1f1f1;
   padding: 1rem;
 }
 .button-end-modal {
   padding: 0.5rem;
   font-size: 1rem;
   cursor: pointer;
-  background-color: #6366f1;
+  background-color: #31b355;
   color: #fff;
-  border-radius: 12px;
+  text-shadow: 2px 4px 6px rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
   border: none;
 }
 .button-end-modal:hover {
@@ -119,7 +125,7 @@ select {
 .body-modal form {
   display: flex;
   flex-direction: column;
-  padding: 2rem;
+
   gap: 1rem;
 }
 

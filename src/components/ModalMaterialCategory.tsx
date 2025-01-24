@@ -15,7 +15,7 @@ export default function MaterialCategory({ close }: Props) {
         </div>
         <div className="body-modal"></div>
         <div className="end-modal">
-          <button className="btn">Finalizar</button>
+          <button className="button-end-modal">Finalizar</button>
         </div>
       </div>
     </div>

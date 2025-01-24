@@ -120,7 +120,9 @@ export default function EditItems({ item, close, saveChange }: Props) {
           </div>
         </div>
         <div className="end-modal">
-          <button onClick={() => saveEdit()}>Salvar Alteracão</button>
+          <button className="button-end-modal" onClick={() => saveEdit()}>
+            Salvar Alteracão
+          </button>
         </div>
       </div>
     </div>

@@ -10,6 +10,7 @@ type Props = {
 };
 // UTILIZAR API DE BUSCA DE CNPJ EM BREVE
 // https://api.cnpjs.dev/v1/43736082000140
+
 export default function FormNewRegistration({
   recordType,
   closeModal,
@@ -43,7 +44,7 @@ export default function FormNewRegistration({
       <div className="modal">
         <div className="head-modal">
           <span>Cadastro de {data?.title}</span>
-          <i className="close btn" onClick={close}>
+          <i className="close" onClick={close}>
             <FaX />
           </i>
         </div>
@@ -310,11 +311,11 @@ export default function FormNewRegistration({
               />
             </span>
           </form>
-          <div className="end-modal">
-            <button onClick={cadastrarNew} className="button-end-modal">
-              Cadastrar
-            </button>
-          </div>
+        </div>
+        <div className="end-modal">
+          <button onClick={cadastrarNew} className="button-end-modal">
+            Cadastrar
+          </button>
         </div>
       </div>
     </div>

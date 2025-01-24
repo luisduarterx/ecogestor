@@ -419,6 +419,14 @@ span i {
   text-indent: 0.5rem;
   outline: none;
   padding: 0.7rem;
+  background-color: transparent;
+}
+select {
+  border-bottom: 1px solid #ccc;
+
+  background-color: transparent;
+  padding: 0.4rem;
+  color: #a5a4a4;
 }
 label {
   font-weight: bolder;
@@ -536,7 +544,7 @@ tfoot td {
   margin: auto;
   margin-top: 1rem;
   flex-direction: column;
-  justify-content: end;
+  justify-content: flex-end;
   gap: 1rem;
   display: flex;
 }
@@ -547,7 +555,7 @@ tfoot td {
   border-bottom: 1px solid #f1f1f1;
   margin-bottom: 1rem;
 
-  justify-content: start;
+  justify-content: flex-start;
 }
 
 @media screen and (max-width: 926px) and (min-width: 473px) {
