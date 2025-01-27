@@ -421,7 +421,7 @@ span i {
   padding: 0.7rem;
   background-color: transparent;
 }
-select {
+.headerMateriais select {
   border-bottom: 1px solid #ccc;
 
   background-color: transparent;
@@ -434,6 +434,7 @@ label {
 .campo input {
   padding: 0.5rem;
 }
+
 .campo .input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
@@ -587,9 +588,6 @@ tfoot td {
   .headerOrderForm form {
     flex-direction: row;
     justify-content: space-between;
-  }
-  .campo {
-    width: 20%;
   }
 
   .c-large {

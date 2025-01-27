@@ -41,7 +41,7 @@ export default function FormNewRegistration({
   });
   return (
     <div className="bg-blocked">
-      <div className="modal">
+      <div className="modal m-large">
         <div className="head-modal">
           <span>Cadastro de {data?.title}</span>
           <i className="close" onClick={close}>

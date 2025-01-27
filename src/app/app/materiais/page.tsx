@@ -1,6 +1,7 @@
 "use client";
 import { Grupos } from "@/app/auxiliar/gruposMateriais";
 import { Array_materiais } from "@/app/auxiliar/materiais";
+import CreateTable from "@/components/ModalCreateTable";
 import MaterialCategory from "@/components/ModalMaterialCategory";
 import PriceTables from "@/components/ModalPriceTables";
 import { useState } from "react";
@@ -9,6 +10,7 @@ import { FaSearch } from "react-icons/fa";
 export default function Page() {
   const [showModalCategory, setShowModalCategory] = useState(false);
   const [showPriceTable, setShowPriceTable] = useState(false);
+  const [showModalNewTable, setShowNewTable] = useState(false);
   const [inputSearch, setInputSearch] = useState("");
 
   const closeModalCategory = () => {
@@ -17,9 +19,13 @@ export default function Page() {
   const closeModalPriceTable = () => {
     setShowPriceTable(false);
   };
+  const closeModalNewTable = () => {
+    setShowNewTable(false);
+  };
   return (
     <div className="">
       <div className="container-foot-btns">
+        {showModalNewTable && <CreateTable close={closeModalNewTable} />}
         {showModalCategory && <MaterialCategory close={closeModalCategory} />}
         {showPriceTable && <PriceTables close={closeModalPriceTable} />}
 
@@ -27,8 +33,12 @@ export default function Page() {
           {" "}
           Grupos de Materiais
         </button>
+        <button className=" btn" onClick={() => setShowNewTable(true)}>
+          {" "}
+          Nova Tabela
+        </button>
         <button className="btn" onClick={() => setShowPriceTable(true)}>
-          Tabelas de Preços
+          Gerenciar Tabelas
         </button>
       </div>
       <div className="containerMain">
