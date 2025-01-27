@@ -3,6 +3,7 @@ import { Grupos } from "@/app/auxiliar/gruposMateriais";
 import { Array_materiais } from "@/app/auxiliar/materiais";
 import CreateTable from "@/components/ModalCreateTable";
 import MaterialCategory from "@/components/ModalMaterialCategory";
+import NewMaterial from "@/components/ModalNewMaterial";
 import PriceTables from "@/components/ModalPriceTables";
 import { useState } from "react";
 import { FaSearch } from "react-icons/fa";
@@ -12,6 +13,7 @@ export default function Page() {
   const [showPriceTable, setShowPriceTable] = useState(false);
   const [showModalNewTable, setShowNewTable] = useState(false);
   const [inputSearch, setInputSearch] = useState("");
+  const [showModalNewMaterial, setNewMaterial] = useState(false);
 
   const closeModalCategory = () => {
     setShowModalCategory(false);
@@ -22,12 +24,16 @@ export default function Page() {
   const closeModalNewTable = () => {
     setShowNewTable(false);
   };
+  const closeModalNewMaterial = () => {
+    setNewMaterial(false);
+  };
   return (
     <div className="">
       <div className="container-foot-btns">
         {showModalNewTable && <CreateTable close={closeModalNewTable} />}
         {showModalCategory && <MaterialCategory close={closeModalCategory} />}
         {showPriceTable && <PriceTables close={closeModalPriceTable} />}
+        {showModalNewMaterial && <NewMaterial close={closeModalNewMaterial} />}
 
         <button className=" btn" onClick={() => setShowModalCategory(true)}>
           {" "}
@@ -39,6 +45,9 @@ export default function Page() {
         </button>
         <button className="btn" onClick={() => setShowPriceTable(true)}>
           Gerenciar Tabelas
+        </button>
+        <button className="btn" onClick={() => setNewMaterial(true)}>
+          Cadastrar Material
         </button>
       </div>
       <div className="containerMain">

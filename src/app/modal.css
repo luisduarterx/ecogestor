@@ -56,6 +56,12 @@
 .body-modal {
   padding: 1rem;
 }
+.listMaterialsTable input {
+  border: 1px solid #ccc;
+
+  color: #000;
+  box-sizing: border-box;
+}
 
 .end-modal {
   display: flex;

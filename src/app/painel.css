@@ -534,6 +534,12 @@ tfoot td {
 .red:hover {
   background-color: rgb(192, 2, 2);
 }
+.blue {
+  background-color: rgb(65, 128, 229);
+}
+.blue:hover {
+  background-color: rgb(56, 110, 197);
+}
 .btn-actions {
   justify-content: center;
   display: flex;

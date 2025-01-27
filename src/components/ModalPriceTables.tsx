@@ -72,7 +72,7 @@ export default function PriceTables({ close }: Props) {
                 <td className="flex-2 false-input">
                   Estamparia de Aluminio Suja
                 </td>
-                <td className="flex-1 false-input">4.00</td>
+                <input className=" flex-1 " type="text" />
                 <td className="flex-03 btn-tables">
                   <FaTrash />
                 </td>

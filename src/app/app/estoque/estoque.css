@@ -1,0 +1,18 @@
+.line-estoque {
+  display: flex;
+  width: 95%;
+  margin: auto;
+  gap: 3rem;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 2rem;
+}
+.dash-item {
+  width: 20%;
+  padding: 1rem;
+  border-radius: 4px;
+}
+.dash-item span {
+  font-size: 1.4rem;
+}
