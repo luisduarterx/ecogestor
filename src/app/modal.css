@@ -84,6 +84,35 @@
 .button-end-modal:hover {
   background-color: #6365f1c2;
 }
+.btn-escolha {
+  width: 50%;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 1rem;
+  cursor: pointer;
+
+  color: #fff;
+  text-shadow: 2px 4px 6px rgba(0, 0, 0, 0.5);
+  border-radius: 2px;
+  border: none;
+  box-sizing: border-box;
+}
+.hidden {
+  display: none;
+}
+.btn-active {
+  background-color: #31b355;
+}
+.btn-disabled {
+  background-color: #545050;
+  cursor: not-allowed;
+}
+.modal-two-btns {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
 .campo {
   display: flex;
   flex-direction: column;

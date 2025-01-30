@@ -497,6 +497,13 @@ tbody td {
   border: 1px solid #f1f1f1;
   padding: 0.4rem;
 }
+tfoot tr td {
+  display: flex;
+  gap: 0.4rem;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
 td.material {
   text-align: start;
 }
