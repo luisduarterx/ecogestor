@@ -486,10 +486,10 @@ table {
 table .material {
   width: 50%;
 }
-.tableOrder tbody tr:nth-child(odd) {
+table tbody tr:nth-child(odd) {
   background-color: #e9e9ff;
 }
-.tableOrder tbody tr:nth-child(even) {
+table tbody tr:nth-child(even) {
   background-color: #f8f8ff;
 }
 tbody td {
