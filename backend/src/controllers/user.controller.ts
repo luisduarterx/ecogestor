@@ -11,6 +11,7 @@ export const CreateUserController: RequestHandler = async (req, res) => {
     return;
   }
   const { name, email, senha, telefone, rankID } = request.data;
+
   //Verificar dados Recebidos
 
   try {

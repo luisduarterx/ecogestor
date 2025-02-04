@@ -57,7 +57,7 @@ export const createUser = async ({
     };
   } catch (error) {
     return {
-      error: "Já existe um login com esse e-mail",
+      error: error,
     };
   }
 };
