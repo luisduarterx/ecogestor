@@ -22,6 +22,7 @@ export const FormLogin = ({ onSwitch }: Props) => {
       email: inputEmail.toLowerCase(),
       senha: inputPassword,
     };
+    console.log(credenciais);
     try {
       const res = await fetch("http://localhost:4000/login", {
         method: "POST",

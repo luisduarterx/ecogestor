@@ -1,4 +1,10 @@
-import express, { Router } from "express";
+import express, {
+  NextFunction,
+  Request,
+  RequestHandler,
+  Response,
+  Router,
+} from "express";
 import { router } from "./src/routes";
 import passport from "passport";
 import { estrategiaLocal } from "./src/libs/passport-local";
@@ -14,11 +20,17 @@ app.use(
   })
 );
 app.listen(4000, () => {
-  console.log("Servidor Rodando em http://localhost:3000/ ...");
+  console.log("Servidor Rodando em http://localhost:4000/ ...");
 });
-app.use(express.json());
+
 passport.use(EstrategiaJWT);
 passport.use(estrategiaLocal);
 app.use(passport.initialize());
+
+// Middleware para processar JSON
+app.use(express.json());
+
+// Middleware para processar dados urlencoded
+app.use(express.urlencoded({ extended: true }));
 
 app.use(router);

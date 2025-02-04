@@ -22,6 +22,7 @@ export const findUserByEmailAndPassword = async ({
     },
   });
   if (user) {
+    console.log(user);
     return user[0];
   } else {
     return undefined;
@@ -41,24 +42,48 @@ export const createUser = async ({
   telefone,
   rankID,
 }: User) => {
-  const user = await prisma.user.create({
-    data: {
-      name,
-      email,
-      senha,
-      telefone,
-      rankID,
-    },
-  });
-  console.log(user);
+  try {
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        senha,
+        telefone,
+        rankID,
+      },
+    });
+    return {
+      message: "usuario criado com sucesso",
+    };
+  } catch (error) {
+    return {
+      error: "Já existe um login com esse e-mail",
+    };
+  }
 };
+
 export const findUserByID = async (id: number) => {
   try {
     const user = await prisma.user.findFirst({ where: { id } });
 
-    return user;
+    return {
+      id: user?.id,
+      name: user?.name,
+      email: user?.email,
+      rankID: user?.rankID,
+    };
   } catch (error) {
     console.log("nao identificado");
+    return error;
+  }
+};
+
+export const showUsers = async () => {
+  try {
+    const users = await prisma.user.findMany();
+
+    return users;
+  } catch (error) {
     return error;
   }
 };

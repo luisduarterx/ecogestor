@@ -21,6 +21,7 @@ export const estrategiaLocal = new localStrategy(
   async (email, senha, done) => {
     try {
       const user = await findUserByEmailAndPassword({ email, senha });
+      console.log(user);
       if (user) {
         const response: ResponseUser = {
           user,
