@@ -1,6 +1,7 @@
+import { useAuthContext } from "@/context/userContext";
 import { useState } from "react";
 import { FaArrowDown, FaBars, FaBell, FaSearch } from "react-icons/fa";
-import { FaArrowDown19 } from "react-icons/fa6";
+import { FaArrowDown19, FaX } from "react-icons/fa6";
 
 type Props = {
   menuOpen: boolean;
@@ -11,6 +12,7 @@ export const HeaderPainel = ({ menuOpen, setMenu }: Props) => {
   const styleShowMenu = {
     width: menuOpen ? "calc(100% - 300px)" : "100%",
   };
+  const { user, logout } = useAuthContext();
   return (
     <div className="headerPainel" style={styleShowMenu}>
       <div className="initialHeader">
@@ -42,9 +44,16 @@ export const HeaderPainel = ({ menuOpen, setMenu }: Props) => {
         <div className="profileHeader">
           <img src="/logosymbol.png" className="miniatureProfile" />
           <span>
-            Username
+            {user?.name}
             <i>
               <FaArrowDown />
+            </i>
+            <i
+              onClick={() => {
+                logout();
+              }}
+            >
+              <FaX />
             </i>
           </span>
         </div>

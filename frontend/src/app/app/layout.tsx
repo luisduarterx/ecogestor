@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { verify } from "crypto";
 import { useAuth } from "@/hooks/auth";
+import { AuthProvider } from "@/context/userContext";
 
 export default function RootLayout({
   children,
@@ -35,17 +36,19 @@ export default function RootLayout({
     <html lang="pt-BR">
       <head></head>
       <body>
-        <div className="painel">
-          <Navigation menuOpen={showMenu} setMenu={setShowMenu}></Navigation>
+        <AuthProvider>
+          <div className="painel">
+            <Navigation menuOpen={showMenu} setMenu={setShowMenu}></Navigation>
 
-          <div className="containerPainel" style={styleShowMenu}>
-            <HeaderPainel
-              menuOpen={showMenu}
-              setMenu={setShowMenu}
-            ></HeaderPainel>
-            <MainPainel>{children}</MainPainel>
+            <div className="containerPainel" style={styleShowMenu}>
+              <HeaderPainel
+                menuOpen={showMenu}
+                setMenu={setShowMenu}
+              ></HeaderPainel>
+              <MainPainel>{children}</MainPainel>
+            </div>
           </div>
-        </div>
+        </AuthProvider>
       </body>
     </html>
   );
