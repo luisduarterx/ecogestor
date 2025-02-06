@@ -1,4 +1,5 @@
 import { useAuthContext } from "@/context/userContext";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FaArrowDown, FaBars, FaBell, FaSearch } from "react-icons/fa";
 import { FaArrowDown19, FaX } from "react-icons/fa6";
@@ -8,10 +9,12 @@ type Props = {
   setMenu: (x: boolean) => void;
 };
 export const HeaderPainel = ({ menuOpen, setMenu }: Props) => {
+  const router = useRouter();
   const [inputSearch, setInputSearch] = useState("");
   const styleShowMenu = {
     width: menuOpen ? "calc(100% - 300px)" : "100%",
   };
+  const [showProfileMenu, setProfileMenu] = useState(false);
   const { user, logout } = useAuthContext();
   return (
     <div className="headerPainel" style={styleShowMenu}>
@@ -42,18 +45,37 @@ export const HeaderPainel = ({ menuOpen, setMenu }: Props) => {
         </i>
         <div className="barH"></div>
         <div className="profileHeader">
+          {showProfileMenu && (
+            <div className="profileMenu">
+              <ul>
+                <li
+                  onClick={() => {
+                    router.push("/app/profile");
+                  }}
+                >
+                  Minhas informaçoes
+                </li>
+                <li>Minhas Preferencias</li>
+                <li
+                  onClick={() => {
+                    logout();
+                  }}
+                >
+                  Sair
+                </li>
+              </ul>
+            </div>
+          )}
+
           <img src="/logosymbol.png" className="miniatureProfile" />
           <span>
             {user?.name}
-            <i>
-              <FaArrowDown />
-            </i>
             <i
               onClick={() => {
-                logout();
+                setProfileMenu(!showProfileMenu);
               }}
             >
-              <FaX />
+              <FaArrowDown />
             </i>
           </span>
         </div>

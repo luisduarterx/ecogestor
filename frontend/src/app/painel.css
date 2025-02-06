@@ -117,6 +117,7 @@ i {
   gap: 1rem;
 }
 .profileHeader {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -570,6 +571,42 @@ tfoot td {
   margin-bottom: 1rem;
 
   justify-content: flex-start;
+}
+
+.profileMenu {
+  position: absolute;
+  margin-top: 100%;
+  background-color: #fff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra opcional */
+  width: 180px;
+
+  border-radius: 3px;
+}
+.profileMenu ul {
+  list-style: none;
+  padding: 0.4rem;
+}
+.profileMenu ul li {
+  padding: 0.4rem;
+  border-radius: 3px;
+}
+.profile {
+  padding: 2rem;
+  height: 400px;
+}
+.profileMenu ul li:hover {
+  background-color: #f1f1f1;
+}
+.profileHeader {
+  display: flex;
+}
+.profileBody {
+  margin-top: 1rem;
+  padding: 1rem;
+}
+.profileHeader .line {
+  width: 70%;
+  border-bottom: 1px solid #ccc;
 }
 
 @media screen and (max-width: 926px) and (min-width: 473px) {

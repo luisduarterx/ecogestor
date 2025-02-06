@@ -21,6 +21,7 @@ model User{
   rankID Int
   cargo Rank @relation(fields: [rankID],references: [id])
   pedidos Pedido[]
+  movimentacoes Movimentacao[]
 }
 model Rank{
   id Int @id @default(autoincrement())
@@ -74,6 +75,7 @@ model SaldoFinanceiro{
   id Int @id @default(autoincrement())
   registerID Int @unique
   Register Register @relation(fields: [registerID],references: [id])
+  value Decimal
 }
 model Endereco{
   id Int @id @default(autoincrement())
@@ -125,6 +127,7 @@ model Material {
   criadoEm DateTime @default(now())
   editadoEm DateTime @updatedAt @default(now())
   estoque Decimal
+  items ItemPedido[]
 }
 model CategoriaMaterial {
   id Int @id @default(autoincrement())
@@ -151,6 +154,7 @@ model ItemPedido {
   pedidoID Int
   pedido Pedido @relation(fields: [pedidoID], references: [id])
   materialID Int
+  material Material @relation(fields: [materialID],references: [id])
   preco Decimal
   quantidade Decimal
   tara Decimal
@@ -180,5 +184,7 @@ model Movimentacao{
   pedido Pedido? @relation(fields: [pedidoID],references: [id])
   parcela Int?
   totalParcelas Int?
+  userID Int
+  User User @relation(fields: [userID],references: [id])
 
 }
