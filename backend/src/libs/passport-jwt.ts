@@ -13,12 +13,11 @@ export const EstrategiaJWT = new JWTStrategy(options, async (payload, done) => {
   try {
     const user = await findUserByID(Number(id));
 
-    if (user) {
-      console.log(user);
-      return done(null, user);
-    } else {
+    if (!user) {
       return done(null, false);
     }
+    console.log(user);
+    return done(null, user);
   } catch (error) {
     return error;
   }

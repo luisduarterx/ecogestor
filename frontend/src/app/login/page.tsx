@@ -14,7 +14,7 @@ export default function Page() {
 
   const [showLogin, setShowLogin] = useState(true);
 
-  if (user) {
+  if (user?.id) {
     return router.push("/app/home");
   }
 

@@ -68,7 +68,7 @@ model Register{
   telefone String? // n:n
   criadoEm DateTime @default(now())
   editadoEm DateTime @updatedAt @default(now())
-  Saldo SaldoFinanceiro[]
+  Saldo SaldoFinanceiro?
   
 }
 model SaldoFinanceiro{
