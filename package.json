@@ -15,7 +15,9 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "next dev",
+    "dev": " docker compose -f infra/compose.yaml up -d && next dev ",
+    "db:up": "docker compose -f infra/compose.yaml up",
+    "db:stop": "docker compose -f infra/compose.yaml down",
     "build": "next build",
     "start": "next start",
     "lint:check": "prettier --check .",
