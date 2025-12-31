@@ -23,15 +23,17 @@
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watchAll"
   },
   "dependencies": {
     "next": "^16.1.1",
+    "pg": "^8.16.3",
     "react": "^19.2.3",
     "react-dom": "^19.2.3"
   },
   "devDependencies": {
     "@types/jest": "^30.0.0",
+    "dotenv": "^17.2.3",
     "jest": "^30.2.0",
     "prettier": "^3.7.4"
   }
