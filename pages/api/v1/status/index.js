@@ -9,8 +9,6 @@ const status = async (req, res) => {
   const max_connections = Number(query_max_connections.rows[0].max_connections);
   const openned_connections = Number(query_openned_conections.rows[0].count);
   const server_version = Number(query_server_version.rows[0].server_version);
-  const result = await database.query("SELECT 1+1;");
-  console.log(result);
 
   res.json({
     database: {
