@@ -1,4 +1,4 @@
-import database from "../../../infra/database";
+import database from "infra/database";
 const status = async (req, res) => {
   const query_server_version = await database.query("SHOW server_version;");
   const query_max_connections = await database.query("SHOW max_connections;");
