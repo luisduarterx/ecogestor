@@ -3,33 +3,41 @@ import { join } from "path";
 import database from "infra/database.js";
 
 export default async function migrations(req, res) {
-  const dbClient = await database.getNewClient();
-  const defaultMigrationsOptions = {
-    dbClient,
-    dryRun: false,
-    dir: join("infra", "migrations"),
-    direction: "up",
-    verbose: true,
-    migrationsTable: "pgmigrations",
-  };
-  if (req.method == "POST") {
-    const migratedMigrations = await runner({
-      ...defaultMigrationsOptions,
-    });
-    await dbClient.end();
-    if (migratedMigrations.length > 0) {
-      return res.status(201).json(migratedMigrations);
-    }
-    return res.status(200).json(migratedMigrations);
+  const methodsAllowed = ["POST", "GET"];
+  if (!methodsAllowed.includes(req.method)) {
+    res.status(405).json({ error: `Método ${req.method} não permitido!` });
   }
-  if (req.method == "GET") {
-    const pendingMigrations = await runner({
-      ...defaultMigrationsOptions,
-      dryRun: true,
-    });
-    await dbClient.end();
+  let dbClient;
+  try {
+    dbClient = await database.getNewClient();
+    const defaultMigrationsOptions = {
+      dbClient,
+      dryRun: false,
+      dir: join("infra", "migrations"),
+      direction: "up",
+      verbose: true,
+      migrationsTable: "pgmigrations",
+    };
+    if (req.method == "POST") {
+      const migratedMigrations = await runner({
+        ...defaultMigrationsOptions,
+      });
 
-    return res.status(200).json(pendingMigrations);
+      if (migratedMigrations.length > 0) {
+        return res.status(201).json(migratedMigrations);
+      }
+      return res.status(200).json(migratedMigrations);
+    }
+    if (req.method == "GET") {
+      const pendingMigrations = await runner({
+        ...defaultMigrationsOptions,
+        dryRun: true,
+      });
+
+      return res.status(200).json(pendingMigrations);
+    }
+  } catch (error) {
+  } finally {
+    await dbClient.end();
   }
-  return res.status(405).end();
 }
