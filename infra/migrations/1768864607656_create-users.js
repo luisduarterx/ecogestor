@@ -15,16 +15,18 @@ module.exports.up = function (pgm) {
       unique: true,
     },
     senha: {
-      type: "varchar(72)",
+      type: "varchar(60)",
       notNull: true,
     },
     criado_em: {
       type: "timestamptz",
-      default: pgm.func("now()"),
+      default: pgm.func("timezone('utc',now())"),
+      notNull: true,
     },
     atualizado_em: {
       type: "timestamptz",
-      default: pgm.func("now()"),
+      default: pgm.func("timezone('utc',now())"),
+      notNull: true,
     },
   });
 };
