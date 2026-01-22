@@ -1,14 +1,19 @@
-import { InternalServerError, MethodError } from "infra/errors";
+import {
+  InternalServerError,
+  MethodError,
+  ValidationError,
+} from "infra/errors";
 const onNoMatchHandler = async (req, res) => {
   const errorPublicHandle = new MethodError();
   return res.status(errorPublicHandle.statusCode).json(errorPublicHandle);
 };
 const onErrorHandler = (error, req, res) => {
-  console.log("TESTE", error);
-  console.log(error.statusCode);
+  if (error instanceof ValidationError) {
+    res.status(400).json(error);
+  }
+  console.log(error);
   const publicError = new InternalServerError(error, error.statusCode);
   res.status(publicError.statusCode).json(publicError);
-  console.error(error);
 };
 
 const controller = {
