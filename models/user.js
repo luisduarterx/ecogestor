@@ -1,6 +1,9 @@
 import database from "infra/database";
 import { ValidationError } from "infra/errors";
+import password from "./password";
 const create = async (userInputValues) => {
+  await password.hash(userInputValues);
+
   const userExist = await findUserByEmail(userInputValues.email);
   if (userExist) {
     throw new ValidationError(
