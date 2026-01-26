@@ -63,12 +63,12 @@ describe("GET /api/v1/users/[id]", () => {
       const responseBody = await response.json();
 
       expect(responseBody).toEqual({
-        name: "ValidationError",
+        name: "NotFoundError",
         message: "Não foi possivel encontrar esse usuário",
         action: "Tente novamente enviando um usuário válido",
-        status_code: 400,
+        status_code: 404,
       });
-      expect(response.status).toBe(400);
+      expect(response.status).toBe(404);
     });
   });
 });

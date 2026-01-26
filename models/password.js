@@ -6,8 +6,11 @@ const hash = async (userInputValues) => {
   userInputValues.senha = newHash;
   return userInputValues;
 };
-
+const compare = async (userInputValues) => {
+  return await bcryptjs.compare(userInputValues.senha, userInputValues.hash);
+};
 const password = {
   hash,
+  compare,
 };
 export default password;
