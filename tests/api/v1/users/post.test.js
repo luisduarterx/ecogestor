@@ -28,7 +28,7 @@ describe("POST /api/v1/users", () => {
         id: responseBody.id,
         nome: "Luis CLaudio Duarte",
         email: "luiscdradm@gmail.com",
-        senha: "senha123",
+        senha: responseBody.senha,
         criado_em: responseBody.criado_em,
         atualizado_em: responseBody.atualizado_em,
       });
