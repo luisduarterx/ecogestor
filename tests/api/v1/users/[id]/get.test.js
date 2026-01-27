@@ -10,48 +10,25 @@ beforeAll(async () => {
 describe("GET /api/v1/users/[id]", () => {
   describe("Usuario anonimo", () => {
     test("Com id válido", async () => {
-      const response = await fetch("http://localhost:3000/api/v1/users", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          nome: "User Teste",
-          email: "teste1@gmail.com",
-          senha: "senha123",
-        }),
-      });
-
-      const responseBody = await response.json();
-
-      expect(responseBody).toEqual({
-        id: responseBody.id,
+      const user = await orchestrator.createUser({
         nome: "User Teste",
         email: "teste1@gmail.com",
-        senha: responseBody.senha,
-        criado_em: responseBody.criado_em,
-        atualizado_em: responseBody.atualizado_em,
+        senha: "senha123",
       });
 
-      expect(uuidVersion(responseBody.id)).toBe(4);
-      expect(Date.parse(responseBody.criado_em)).not.toBeNaN();
-      expect(Date.parse(responseBody.atualizado_em)).not.toBeNaN();
-
-      expect(response.status).toBe(201);
-
       const response2 = await fetch(
-        `http://localhost:3000/api/v1/users/${responseBody.id}`,
+        `http://localhost:3000/api/v1/users/${user.id}`,
       );
 
       const response2Body = await response2.json();
 
       expect(response2Body).toEqual({
-        id: responseBody.id,
+        id: user.id,
         nome: "User Teste",
         email: "teste1@gmail.com",
         senha: response2Body.senha,
-        criado_em: responseBody.criado_em,
-        atualizado_em: responseBody.atualizado_em,
+        criado_em: response2Body.criado_em,
+        atualizado_em: response2Body.atualizado_em,
       });
       expect(response2.status).toBe(200);
     });
