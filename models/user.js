@@ -41,7 +41,6 @@ const findUserByEmail = async (email) => {
     `,
     values: [email],
   });
-  console.log("nome:", result.rows[0]);
 
   return result.rows[0];
 };

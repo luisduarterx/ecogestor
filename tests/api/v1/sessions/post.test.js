@@ -79,10 +79,18 @@ describe("POST /api/v1/sessions", () => {
       });
       const responseBody = await response.json();
       expect(responseBody).toEqual({
-        session: sessionid,
-        // aqui é somente para lembrar de implementar a autenticaçao e criar o model authentication
+        id: responseBody.id,
+        token: responseBody.token,
+        user_id: responseBody.user_id,
+        expira_em: responseBody.expira_em,
+        criado_em: responseBody.criado_em,
+        atualizado_em: responseBody.atualizado_em,
       });
-      expect(response.status).toBe(200);
+      expect(uuidVersion(responseBody.id)).toBe(4); // verifica se o id é um UUID v4 válido
+      expect(Date.parse(responseBody.criado_em)).not.toBeNaN(); // verifica se não é um NAN
+      expect(Date.parse(responseBody.atualizado_em)).not.toBeNaN();
+
+      expect(response.status).toBe(201);
     });
   });
 });

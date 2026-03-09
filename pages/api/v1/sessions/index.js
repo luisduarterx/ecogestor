@@ -1,31 +1,21 @@
-import database from "infra/database";
 import { createRouter } from "next-connect";
 import controller from "infra/controller";
-import user from "models/user";
-import { UnAuthorizedError } from "infra/errors";
-import password from "models/password";
+import autentication from "models/authentication";
+import session from "models/session";
 const router = createRouter();
 router.post(async (req, res) => {
   const userInputValues = req.body;
 
-  const usuario = await user.findUserByEmail(userInputValues.email);
+  const usuario = await autentication.userAuth(
+    userInputValues.email,
+    userInputValues.senha,
+  );
 
-  if (!usuario) {
-    throw new UnAuthorizedError("Tente efetuar login com um email válido.");
-  }
-  console.log(usuario.senha);
+  const newSession = await session.create(usuario.id);
 
-  const comparacao = await password.compare({
-    senha: userInputValues.senha,
-    hash: usuario.senha,
-  });
-  console.log("COMPARE:  ", comparacao);
+  console.log(newSession);
 
-  if (!comparacao) {
-    throw new UnAuthorizedError();
-  }
-
-  res.status(200).json(usuario);
+  res.status(201).json(newSession);
 });
 export default router.handler({
   onNoMatch: controller.onNoMatchHandler,
