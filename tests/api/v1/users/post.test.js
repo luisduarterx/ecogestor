@@ -62,5 +62,23 @@ describe("POST /api/v1/users", () => {
       });
       expect(response.status).toEqual(400);
     });
+    test("Sem body dentro da request", async () => {
+      const response = await fetch("http://localhost:3000/api/v1/users", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+      });
+
+      const responseBody = await response.json();
+
+      expect(responseBody).toEqual({
+        name: "ValidationError",
+        message: "Um erro de validação ocorreu.",
+        action: "Verifique os dados enviados e tente novamente.",
+        status_code: 400,
+      });
+      expect(response.status).toEqual(400);
+    });
   });
 });
