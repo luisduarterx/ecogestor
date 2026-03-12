@@ -2,9 +2,23 @@ import database from "infra/database";
 import { createRouter } from "next-connect";
 import controller from "infra/controller";
 import user from "models/user";
+import z from "zod";
+import { ValidationError } from "infra/errors";
 const router = createRouter();
 router.post(async (req, res) => {
   const userInputValues = req.body;
+
+  const schema = z.object({
+    nome: z.string(),
+    email: z.email(),
+    senha: z.string(),
+  });
+
+  const dataParsed = schema.safeParse(userInputValues);
+
+  if (!dataParsed.success) {
+    throw new ValidationError();
+  }
 
   const newUser = await user.create(userInputValues);
 

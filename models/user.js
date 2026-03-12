@@ -1,5 +1,9 @@
 import database from "infra/database";
-import { NotFoundError, ValidationError } from "infra/errors";
+import {
+  NotFoundError,
+  UnAuthorizedError,
+  ValidationError,
+} from "infra/errors";
 import password from "./password";
 import db from "node-pg-migrate/dist/db";
 const create = async (userInputValues) => {
@@ -104,6 +108,7 @@ const user = {
   create,
   findUserByID,
   update,
+  findUserByEmail,
 };
 
 export default user;

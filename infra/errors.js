@@ -85,3 +85,19 @@ export class NotFoundError extends Error {
     };
   }
 }
+export class UnAuthorizedError extends Error {
+  constructor(message, action) {
+    super(message || "Erro durante a autenticação.");
+    this.name = "UnAuthorizedError";
+    this.action = action || "Verifique os dados enviados e tente novamente.";
+    this.statusCode = 401;
+  }
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      status_code: this.statusCode,
+    };
+  }
+}

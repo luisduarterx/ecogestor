@@ -2,6 +2,7 @@ import {
   InternalServerError,
   MethodError,
   NotFoundError,
+  UnAuthorizedError,
   ValidationError,
 } from "infra/errors";
 const onNoMatchHandler = async (req, res) => {
@@ -9,7 +10,7 @@ const onNoMatchHandler = async (req, res) => {
   return res.status(errorPublicHandle.statusCode).json(errorPublicHandle);
 };
 const onErrorHandler = (error, req, res) => {
-  if (error instanceof ValidationError || NotFoundError) {
+  if (error instanceof ValidationError || NotFoundError || UnAuthorizedError) {
     console.log(error);
     res.status(error.statusCode).json(error);
   }
