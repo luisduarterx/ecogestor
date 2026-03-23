@@ -1,3 +1,7 @@
+const dotenv = require("dotenv");
+dotenv.config({
+  path: ".env.development",
+});
 const { exec } = require("node:child_process");
 
 process.stdout.write("🔴 Aguardando postgres aceitar conexões...");
