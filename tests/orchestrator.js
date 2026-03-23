@@ -1,7 +1,7 @@
 import { faker } from "@faker-js/faker";
 import retry from "async-retry";
-import database from "infra/database";
-import migrator from "models/migrator.js";
+import { prisma } from "infra/database";
+
 import user from "models/user";
 
 async function waitForAllServices() {
@@ -23,12 +23,10 @@ async function waitForAllServices() {
   }
 }
 async function clearDatabase() {
-  await database.query("drop schema public cascade; create schema public;");
+  await prisma.sessions.deleteMany();
+  await prisma.users.deleteMany();
 }
 
-async function runPendingMigrations() {
-  await migrator.runPendingMigrations();
-}
 async function createUser(userInputArguments) {
   return await user.create({
     nome: userInputArguments.nome,
@@ -39,7 +37,6 @@ async function createUser(userInputArguments) {
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
-  runPendingMigrations,
   createUser,
 };
 

@@ -4,7 +4,6 @@ import { version as uuidVersion } from "uuid";
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
-  await orchestrator.runPendingMigrations();
 });
 
 describe("POST /api/v1/users", () => {
@@ -33,7 +32,6 @@ describe("POST /api/v1/users", () => {
         atualizado_em: responseBody.atualizado_em,
       });
 
-      expect(uuidVersion(responseBody.id)).toBe(4);
       expect(Date.parse(responseBody.criado_em)).not.toBeNaN();
       expect(Date.parse(responseBody.atualizado_em)).not.toBeNaN();
 

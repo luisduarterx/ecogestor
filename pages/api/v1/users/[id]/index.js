@@ -6,15 +6,25 @@ import { ValidationError } from "infra/errors";
 const router = createRouter();
 router.get(async (req, res) => {
   const id = req.query.id;
+  const idParsed = z.number().safeParse(Number(id));
 
-  const findUser = await user.findUserByID(id);
+  if (!idParsed.success) {
+    throw new ValidationError("ID do usuário inválido.");
+  }
+  const findUser = await user.findUserByID(Number(id));
 
   res.status(200).json(findUser);
 });
 router.patch(async (req, res) => {
-  const id = req.query.id;
-  let userInputValues = req.body;
+  const id = Number(req.query.id);
 
+  const idParsed = z.number().safeParse(id);
+
+  if (!idParsed.success) {
+    throw new ValidationError("ID do usuário inválido.");
+  }
+
+  let userInputValues = req.body;
   const InputSchema = z.object({
     nome: z.string().optional(),
     email: z.email("Email Invalido").optional(),
@@ -25,7 +35,7 @@ router.patch(async (req, res) => {
 
   if (!data.success) {
     console.log("DATA ERROR:", data.error);
-    throw new ValidationError();
+    throw new ValidationError("Dados de entrada inválidos");
   }
 
   userInputValues = data.data;

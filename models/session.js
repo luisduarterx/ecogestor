@@ -1,4 +1,4 @@
-import database from "infra/database";
+import { prisma } from "infra/database";
 import crypto from "node:crypto";
 const expiration_in_miliseconds = 60 * 60 * 24 * 1 * 1000; // 1 dia
 const create = async (userId) => {
@@ -11,20 +11,12 @@ const create = async (userId) => {
   const newSession = await insertQuery(token, userId, expiresAt);
   return newSession;
   async function insertQuery(token, userId, expiresAt) {
-    const result = await database.query({
-      text: `
-            INSERT INTO
-                sessions (token, user_id, expira_em)
-            VALUES
-            ($1, $2, $3)
-            RETURNING
-                *
-            ;`,
-      values: [token, userId, expiresAt],
+    const result = await prisma.sessions.create({
+      data: { token, user_id: userId, expira_em: expiresAt },
     });
 
-    console.log("SESISON:", result.rows[0]);
-    return result.rows[0];
+    console.log("SESISON:", result);
+    return result;
   }
 };
 

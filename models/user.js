@@ -1,11 +1,12 @@
-import database from "infra/database";
 import {
   NotFoundError,
   UnAuthorizedError,
   ValidationError,
 } from "infra/errors";
 import password from "./password";
-import db from "node-pg-migrate/dist/db";
+import { prisma } from "infra/database";
+import { no } from "zod/v4/locales";
+
 const create = async (userInputValues) => {
   await password.hash(userInputValues);
 
@@ -15,55 +16,47 @@ const create = async (userInputValues) => {
       "Não é possivel criar um usuário com um email já cadastrado.",
     );
   }
-  const result = await database.query({
-    text: `
-                INSERT INTO 
-                    users (nome,email,senha) 
-                VALUES 
-                    ($1,$2,$3)
-                RETURNING
-                    *
-                ;`,
-    values: [
-      userInputValues.nome,
-      userInputValues.email.toLowerCase(),
-      userInputValues.senha,
-    ],
+
+  const result = await prisma.users.create({
+    data: {
+      email: userInputValues.email,
+      nome: userInputValues.nome,
+      senha: userInputValues.senha,
+    },
   });
 
-  return result.rows[0];
+  return result;
 };
 
 const findUserByEmail = async (email) => {
-  const result = await database.query({
-    text: `
-      SELECT * FROM users WHERE LOWER(email) = LOWER($1); 
-    `,
-    values: [email],
+  const result = await prisma.users.findFirst({
+    where: {
+      email: email.toLowerCase(),
+    },
   });
 
-  return result.rows[0];
+  return result;
 };
 const findUserByID = async (id) => {
-  const result = await database.query({
-    text: `
-      SELECT * FROM users WHERE id = $1 LIMIT 1; 
-    `,
-    values: [id],
+  const result = await prisma.users.findUnique({
+    where: {
+      id,
+    },
   });
-
-  if (!result.rows[0]) {
+  console.log("result FIND ID", result);
+  if (!result) {
     throw new NotFoundError(
       "Não foi possivel encontrar esse usuário",
       "Tente novamente enviando um usuário válido",
     );
   }
 
-  return result.rows[0];
+  return result;
 };
 
 const update = async (id, userInputValues) => {
   const currentUser = await findUserByID(id);
+  console.log("current", currentUser);
 
   if (userInputValues.email) {
     const uniqueEmail = await findUserByEmail(userInputValues.email);
@@ -78,31 +71,19 @@ const update = async (id, userInputValues) => {
   if (userInputValues.senha) {
     userInputValues = await password.hash(userInputValues);
   }
-
-  const newUser = await database.query({
-    text: `
-        UPDATE
-          users
-        SET
-          nome = COALESCE($4,nome),
-          email = COALESCE($2,email),
-          senha = COALESCE($3,senha),
-          atualizado_em = timezone('utc', now())
-        WHERE  
-          id=$1
-        RETURNING 
-          *
-        ;
-    `,
-    values: [
+  const newUser = await prisma.users.update({
+    where: {
       id,
-      userInputValues.email,
-      userInputValues.senha,
-      userInputValues.nome,
-    ],
+    },
+    data: {
+      nome: userInputValues.nome || currentUser.nome,
+      email: userInputValues.email || currentUser.email,
+      senha: userInputValues.senha || currentUser.senha,
+      atualizado_em: new Date(),
+    },
   });
-
-  return newUser.rows[0];
+  console.log("atualizado", newUser);
+  return newUser;
 };
 const user = {
   create,
