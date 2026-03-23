@@ -23,7 +23,7 @@
     "start": "next start",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
-    "test": "npm run services:up && npm run wait-for-postgres && concurrently --names next,jest --kill-others -s command-jest 'next dev' 'jest --runInBand'",
+    "test": "npm run services:up && npm run wait-for-postgres && npm run migration:up && prisma generate &&  concurrently --names next,jest --kill-others -s command-jest 'next dev' 'jest --runInBand'",
     "test:watch": "jest --watchAll --runInBand",
     "wait-for-postgres": "node infra/scripts/wait-for-postgres.js"
   },
