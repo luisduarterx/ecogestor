@@ -4,8 +4,9 @@ import user from "./user";
 const userAuth = async (emailEnviado, senhaEnviada) => {
   try {
     const usuarioArmazenado = await user.findUserByEmail(emailEnviado);
+    console.log("USUÁRIO ARMAZENADO: ", usuarioArmazenado);
     if (!usuarioArmazenado) {
-      throw new UnAuthorizedError("Tente efetuar login com um email válido.");
+      throw new UnAuthorizedError("Erro durante a autenticação.");
     }
 
     const comparacao = await password.compare({

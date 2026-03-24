@@ -2,9 +2,7 @@ import orchestrator from "tests/orchestrator";
 import { version as uuidVersion } from "uuid";
 
 beforeAll(async () => {
-  await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
-  await orchestrator.runPendingMigrations();
 });
 
 describe("GET /api/v1/users/[id]", () => {
@@ -33,9 +31,7 @@ describe("GET /api/v1/users/[id]", () => {
       expect(response2.status).toBe(200);
     });
     test("Com id inválido", async () => {
-      const response = await fetch(
-        "http://localhost:3000/api/v1/users/569a3edd-5b0f-4306-bcc8-51d0f4b89a3f",
-      );
+      const response = await fetch("http://localhost:3000/api/v1/users/5");
 
       const responseBody = await response.json();
 
@@ -46,6 +42,19 @@ describe("GET /api/v1/users/[id]", () => {
         status_code: 404,
       });
       expect(response.status).toBe(404);
+    });
+    test("Com id NaN", async () => {
+      const response = await fetch(`http://localhost:3000/api/v1/users/qqwdqw`);
+
+      const responseBody = await response.json();
+
+      expect(response.status).toEqual(400);
+      expect(responseBody).toEqual({
+        action: "Verifique os dados enviados e tente novamente.",
+        message: "ID do usuário inválido.",
+        name: "ValidationError",
+        status_code: 400,
+      });
     });
   });
 });
