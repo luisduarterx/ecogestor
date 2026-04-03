@@ -2,9 +2,11 @@ import { createRouter } from "next-connect";
 import controller from "infra/controller";
 import user from "models/user";
 import zod, { z } from "zod";
+import authorization from "models/authorization";
 import { ValidationError } from "infra/errors";
 const router = createRouter();
-router.get(async (req, res) => {
+router.use(authorization.middleware);
+router.get(authorization.canAccess("read:user"), async (req, res) => {
   const id = req.query.id;
   const idParsed = z.number().safeParse(Number(id));
 
@@ -15,7 +17,7 @@ router.get(async (req, res) => {
 
   res.status(200).json(findUser);
 });
-router.patch(async (req, res) => {
+router.patch(authorization.canAccess("update:user"), async (req, res) => {
   const id = Number(req.query.id);
 
   const idParsed = z.number().safeParse(id);

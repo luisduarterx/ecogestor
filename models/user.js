@@ -5,7 +5,6 @@ import {
 } from "infra/errors";
 import password from "./password";
 import { prisma } from "infra/database";
-import { no } from "zod/v4/locales";
 
 const create = async (userInputValues) => {
   await password.hash(userInputValues);
@@ -22,6 +21,7 @@ const create = async (userInputValues) => {
       email: userInputValues.email,
       nome: userInputValues.nome,
       senha: userInputValues.senha,
+      perfil_id: userInputValues.perfil_id ? userInputValues.perfil_id : 1,
     },
   });
 

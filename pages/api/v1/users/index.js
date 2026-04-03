@@ -4,8 +4,10 @@ import controller from "infra/controller";
 import user from "models/user";
 import z from "zod";
 import { ValidationError } from "infra/errors";
+import authorization from "models/authorization";
 const router = createRouter();
-router.post(async (req, res) => {
+router.use(authorization.middleware);
+router.post(authorization.canAccess("create:user"), async (req, res) => {
   const userInputValues = req.body;
 
   const schema = z.object({

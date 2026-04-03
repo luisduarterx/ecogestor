@@ -1,5 +1,6 @@
 import { prisma } from "infra/database";
 import crypto from "node:crypto";
+import user from "./user";
 const expiration_in_miliseconds = 60 * 60 * 24 * 1 * 1000; // 1 dia
 const create = async (userId) => {
   const token = crypto.randomBytes(48).toString("hex");
@@ -19,10 +20,46 @@ const create = async (userId) => {
     return result;
   }
 };
+const validateAndReturnUser = async (token) => {
+  const session = await prisma.sessions.findUnique({
+    where: { token },
+  });
+
+  if (!session) {
+    return null;
+  }
+
+  if (session.expira_em < new Date()) {
+    await prisma.sessions.delete({
+      where: { id: session.id },
+    });
+
+    return null;
+  }
+  const userValid = await prisma.users.findUnique({
+    where: { id: session.user_id },
+    select: {
+      id: true,
+      nome: true,
+      email: true,
+      perfil: { select: { nome: true, permissoes: true } },
+    },
+  });
+
+  if (!userValid) {
+    await prisma.sessions.delete({
+      where: { id: session.id },
+    });
+    return null;
+  }
+
+  return userValid;
+};
 
 const session = {
   create,
   expiration_in_miliseconds,
+  validateAndReturnUser,
 };
 
 export default session;
