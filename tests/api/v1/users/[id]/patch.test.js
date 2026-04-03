@@ -5,11 +5,20 @@ import { version as uuidVersion } from "uuid";
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
+  await orchestrator.seedDatabase();
+  await orchestrator.createPerfilWithoutPermissions();
 });
 
 describe("PATCH /api/v1/users/[id]", () => {
-  describe("Usuario anonimo", () => {
+  describe("Usuario Autenticado", () => {
     test("Com dados e id validos", async () => {
+      const usuarioAutenticado = await orchestrator.createUser({
+        nome: "UsuarioAutenticado1",
+        senha: "senha123",
+      });
+      const userSession = await orchestrator.createSession(
+        usuarioAutenticado.id,
+      );
       const user = await orchestrator.createUser({
         nome: "Testador",
         email: "test-1@gmail.com",
@@ -22,6 +31,7 @@ describe("PATCH /api/v1/users/[id]", () => {
           method: "PATCH",
           headers: {
             "Content-type": "application/json",
+            Cookie: `sid=${userSession.token}`,
           },
           body: JSON.stringify({
             nome: "Testador2",
@@ -36,6 +46,7 @@ describe("PATCH /api/v1/users/[id]", () => {
         id: user.id,
         nome: "Testador2",
         email: "test-1@gmail.com",
+        perfil_id: user.perfil_id,
         senha: responseBody.senha,
         criado_em: responseBody.criado_em,
         atualizado_em: responseBody.atualizado_em,
@@ -43,6 +54,13 @@ describe("PATCH /api/v1/users/[id]", () => {
       expect(responseBody.atualizado_em > responseBody.criado_em).toBe(true);
     });
     test("Com email duplicado", async () => {
+      const usuarioAutenticado = await orchestrator.createUser({
+        nome: "UsuarioAutenticado2",
+        senha: "senha123",
+      });
+      const userSession = await orchestrator.createSession(
+        usuarioAutenticado.id,
+      );
       const user = await orchestrator.createUser({
         nome: "EmailDuplicado",
         email: "test-2@gmail.com",
@@ -54,6 +72,7 @@ describe("PATCH /api/v1/users/[id]", () => {
           method: "PATCH",
           headers: {
             "Content-type": "application/json",
+            Cookie: `sid=${userSession.token}`,
           },
           body: JSON.stringify({
             email: "test-1@gmail.com",
@@ -72,6 +91,13 @@ describe("PATCH /api/v1/users/[id]", () => {
       });
     });
     test("Com nova senha", async () => {
+      const usuarioAutenticado = await orchestrator.createUser({
+        nome: "UsuarioAutenticado3",
+        senha: "senha123",
+      });
+      const userSession = await orchestrator.createSession(
+        usuarioAutenticado.id,
+      );
       const user = await orchestrator.createUser({
         nome: "senhasegura1",
         senha: "senhasegura1",
@@ -83,6 +109,7 @@ describe("PATCH /api/v1/users/[id]", () => {
           method: "PATCH",
           headers: {
             "Content-type": "application/json",
+            Cookie: `sid=${userSession.token}`,
           },
           body: JSON.stringify({
             senha: "senhasegura2",
@@ -97,6 +124,7 @@ describe("PATCH /api/v1/users/[id]", () => {
         id: responseBody.id,
         nome: responseBody.nome,
         email: responseBody.email,
+        perfil_id: responseBody.perfil_id,
         senha: responseBody.senha,
         criado_em: responseBody.criado_em,
         atualizado_em: responseBody.atualizado_em,
@@ -111,10 +139,18 @@ describe("PATCH /api/v1/users/[id]", () => {
       ).toBe(true);
     });
     test("Com id NaN", async () => {
+      const usuarioAutenticado = await orchestrator.createUser({
+        nome: "UsuarioAutenticado4",
+        senha: "senha123",
+      });
+      const userSession = await orchestrator.createSession(
+        usuarioAutenticado.id,
+      );
       const response = await fetch(`http://localhost:3000/api/v1/users/dfsdf`, {
         method: "PATCH",
         headers: {
           "Content-type": "application/json",
+          Cookie: `sid=${userSession.token}`,
         },
         body: JSON.stringify({
           senha: "senhasegura2",
@@ -130,6 +166,122 @@ describe("PATCH /api/v1/users/[id]", () => {
         name: "ValidationError",
         status_code: 400,
       });
+    });
+  });
+  describe("Usuario Não Autenticado", () => {
+    test("Com dados e id validos, sem cookie de sessão", async () => {
+      const usuarioAutenticado = await orchestrator.createUser({
+        nome: "UsuarioAutenticado5",
+        senha: "senha123",
+      });
+      const userSession = await orchestrator.createSession(
+        usuarioAutenticado.id,
+      );
+      const user = await orchestrator.createUser({
+        nome: "Testador",
+        email: "test-5@gmail.com",
+        senha: "senha123",
+      });
+      console.log(user);
+      const response = await fetch(
+        `http://localhost:3000/api/v1/users/${user.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            nome: "Testador2",
+          }),
+        },
+      );
+
+      const responseBody = await response.json();
+
+      expect(response.status).toEqual(401);
+      expect(responseBody).toEqual({
+        name: "UnAuthorizedError",
+        message: "Acesso não autorizado.",
+        action: "Você precisa estar autenticado para acessar esse recurso.",
+        status_code: 401,
+      });
+    });
+    test("Com dados e id validos, com cookie de sessão expirado", async () => {
+      const usuarioAutenticado = await orchestrator.createUser({
+        nome: "UsuarioAutenticado5",
+        senha: "senha123",
+      });
+      const userSession = await orchestrator.createSessionExpired(
+        usuarioAutenticado.id,
+      );
+      const user = await orchestrator.createUser({
+        nome: "Testador",
+        senha: "senha123",
+      });
+      console.log(user);
+      const response = await fetch(
+        `http://localhost:3000/api/v1/users/${user.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            nome: "Testador2",
+          }),
+        },
+      );
+
+      const responseBody = await response.json();
+
+      expect(response.status).toEqual(401);
+      expect(responseBody).toEqual({
+        name: "UnAuthorizedError",
+        message: "Acesso não autorizado.",
+        action: "Você precisa estar autenticado para acessar esse recurso.",
+        status_code: 401,
+      });
+    });
+  });
+  describe("Usuário sem permissão", () => {
+    test("Com dados e id validos, sem permissão de acesso", async () => {
+      const usuarioAutenticado = await orchestrator.createUser({
+        nome: "UsuarioAutenticado1",
+        senha: "senha123",
+        perfil_id: 2,
+      });
+      const userSession = await orchestrator.createSession(
+        usuarioAutenticado.id,
+      );
+      const user = await orchestrator.createUser({
+        nome: "Testador",
+        senha: "senha123",
+      });
+      console.log(user);
+      const response = await fetch(
+        `http://localhost:3000/api/v1/users/${user.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-type": "application/json",
+            Cookie: `sid=${userSession.token}`,
+          },
+          body: JSON.stringify({
+            nome: "Testador2",
+          }),
+        },
+      );
+
+      const responseBody = await response.json();
+
+      expect(responseBody).toEqual({
+        message: "Acesso não autorizado.",
+        name: "UnAuthorizedError",
+        status_code: 401,
+        action: "Você não tem permissão para acessar esse recurso.",
+      });
+
+      expect(response.status).toBe(401);
     });
   });
 });
