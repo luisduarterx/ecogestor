@@ -5,7 +5,7 @@ const router = createRouter();
 
 router.get(async (req, res) => {
   const query_server_version = await prisma.$queryRaw`SHOW server_version;`;
-  console.log(query_server_version);
+
   const query_max_connections = await prisma.$queryRaw`SHOW max_connections;`;
 
   res.json({

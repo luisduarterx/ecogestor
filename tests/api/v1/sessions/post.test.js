@@ -98,7 +98,7 @@ describe("POST /api/v1/sessions", () => {
         }),
       });
       const responseBody = await response.json();
-      console.log(responseBody);
+
       expect(responseBody).toEqual({
         id: responseBody.id,
         token: responseBody.token,
@@ -112,7 +112,6 @@ describe("POST /api/v1/sessions", () => {
       expect(response.status).toBe(201);
 
       const parsedCookie = setCookieParser(response, { map: true });
-      console.log(parsedCookie);
 
       expect(parsedCookie.sid.value).toEqual(responseBody.token);
       // implementar e falta dar commid

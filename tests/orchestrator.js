@@ -27,9 +27,19 @@ async function clearDatabase() {
   await prisma.sessions.deleteMany();
 
   await prisma.users.deleteMany();
+  await prisma.registros.deleteMany();
 }
 async function seedDatabase() {
-  const permissoes = ["create:user", "read:user", "update:user", "delete:user"];
+  const permissoes = [
+    "create:user",
+    "read:user",
+    "update:user",
+    "delete:user",
+    "create:registro",
+    "read:registro",
+    "update:registro",
+    "delete:registro",
+  ];
   await prisma.perfis.upsert({
     where: {
       id: 1,
@@ -74,7 +84,6 @@ async function createSessionExpired(userId) {
     data: { token, user_id: userId, expira_em: expiredDate },
   });
 
-  console.log("SESISON EXPIRED:", sessionExpired);
   return sessionExpired;
 }
 const orchestrator = {

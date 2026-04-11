@@ -24,7 +24,7 @@ describe("PATCH /api/v1/users/[id]", () => {
         email: "test-1@gmail.com",
         senha: "senha123",
       });
-      console.log(user);
+
       const response = await fetch(
         `http://localhost:3000/api/v1/users/${user.id}`,
         {
@@ -182,7 +182,7 @@ describe("PATCH /api/v1/users/[id]", () => {
         email: "test-5@gmail.com",
         senha: "senha123",
       });
-      console.log(user);
+
       const response = await fetch(
         `http://localhost:3000/api/v1/users/${user.id}`,
         {
@@ -218,7 +218,7 @@ describe("PATCH /api/v1/users/[id]", () => {
         nome: "Testador",
         senha: "senha123",
       });
-      console.log(user);
+
       const response = await fetch(
         `http://localhost:3000/api/v1/users/${user.id}`,
         {
@@ -257,7 +257,7 @@ describe("PATCH /api/v1/users/[id]", () => {
         nome: "Testador",
         senha: "senha123",
       });
-      console.log(user);
+
       const response = await fetch(
         `http://localhost:3000/api/v1/users/${user.id}`,
         {
