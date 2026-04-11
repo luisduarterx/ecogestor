@@ -38,5 +38,30 @@ model perfis{
   atualizado_em DateTime @default(now())
   usuarios users[]
 }
+model registros{
+  id Int @id @default(autoincrement())
+  nome String
+  status Boolean @default(true)
+  tipo_registro tipo_registro
+  email String?
+  whatsapp String?
+  cpf String? @unique
+  cnpj String? @unique
+  ie           String?
+  data_nascimento DateTime?
+  cep          String?
+  logradouro   String?
+  numero       String?
+  complemento  String?
+  bairro       String?
+  cidade       String?
+  estado       String?
+  criado_em DateTime @default(now())
+  atualizado_em DateTime @default(now())
+}
+enum tipo_registro{
+  F
+  J
+}
 
  

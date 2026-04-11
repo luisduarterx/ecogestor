@@ -7,8 +7,6 @@ const create = async (userId) => {
 
   const expiresAt = new Date(Date.now() + expiration_in_miliseconds);
 
-  console.log("token: ", token);
-
   const newSession = await insertQuery(token, userId, expiresAt);
   return newSession;
   async function insertQuery(token, userId, expiresAt) {
@@ -16,7 +14,6 @@ const create = async (userId) => {
       data: { token, user_id: userId, expira_em: expiresAt },
     });
 
-    console.log("SESISON:", result);
     return result;
   }
 };

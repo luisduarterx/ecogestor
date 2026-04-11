@@ -9,7 +9,7 @@ beforeAll(async () => {
 });
 
 describe("POST /api/v1/users", () => {
-  describe("Usuario ADMIN autenticado", () => {
+  describe("Usuario autenticado", () => {
     test("Com dados unicos e válidos", async () => {
       const user = await orchestrator.createUser({
         nome: "Padrão de teste 1",
@@ -29,7 +29,6 @@ describe("POST /api/v1/users", () => {
       });
 
       const responseBody = await response.json();
-      console.log("responseBody: ", responseBody);
 
       expect(responseBody).toEqual({
         id: responseBody.id,
@@ -97,6 +96,37 @@ describe("POST /api/v1/users", () => {
       });
       expect(response.status).toEqual(400);
     });
+    test("Com dados unicos e válidos, sem permissão de acesso", async () => {
+      const user = await orchestrator.createUser({
+        nome: "Padrão de teste 1",
+        perfil_id: 2,
+      });
+      const session = await orchestrator.createSession(user.id);
+
+      const response = await fetch("http://localhost:3000/api/v1/users", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Cookie: `sid=${session.token}`,
+        },
+        body: JSON.stringify({
+          nome: "Luis CLaudio Duarte",
+          email: "fakeEmail@gmail.com",
+          senha: "senha123",
+        }),
+      });
+
+      const responseBody = await response.json();
+
+      expect(responseBody).toEqual({
+        message: "Acesso não autorizado.",
+        name: "UnAuthorizedError",
+        status_code: 401,
+        action: "Você não tem permissão para acessar esse recurso.",
+      });
+
+      expect(response.status).toBe(401);
+    });
   });
   describe("Usuário não autenticado", () => {
     test("Com dados unicos e válidos, sem cookie de sessão", async () => {
@@ -154,39 +184,6 @@ describe("POST /api/v1/users", () => {
         name: "UnAuthorizedError",
         status_code: 401,
         action: "Você precisa estar autenticado para acessar esse recurso.",
-      });
-
-      expect(response.status).toBe(401);
-    });
-  });
-  describe("Usuario sem permissão", () => {
-    test("Com dados unicos e válidos, sem permissão de acesso", async () => {
-      const user = await orchestrator.createUser({
-        nome: "Padrão de teste 1",
-        perfil_id: 2,
-      });
-      const session = await orchestrator.createSession(user.id);
-
-      const response = await fetch("http://localhost:3000/api/v1/users", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          Cookie: `sid=${session.token}`,
-        },
-        body: JSON.stringify({
-          nome: "Luis CLaudio Duarte",
-          email: "fakeEmail@gmail.com",
-          senha: "senha123",
-        }),
-      });
-
-      const responseBody = await response.json();
-
-      expect(responseBody).toEqual({
-        message: "Acesso não autorizado.",
-        name: "UnAuthorizedError",
-        status_code: 401,
-        action: "Você não tem permissão para acessar esse recurso.",
       });
 
       expect(response.status).toBe(401);

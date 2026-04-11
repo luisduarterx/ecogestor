@@ -19,7 +19,7 @@ router.post(async (req, res) => {
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
   });
-  console.log(newSession);
+
   res.setHeader("Set-Cookie", setCookie);
   res.status(201).json(newSession);
 });

@@ -43,7 +43,7 @@ const findUserByID = async (id) => {
       id,
     },
   });
-  console.log("result FIND ID", result);
+
   if (!result) {
     throw new NotFoundError(
       "Não foi possivel encontrar esse usuário",
@@ -56,7 +56,6 @@ const findUserByID = async (id) => {
 
 const update = async (id, userInputValues) => {
   const currentUser = await findUserByID(id);
-  console.log("current", currentUser);
 
   if (userInputValues.email) {
     const uniqueEmail = await findUserByEmail(userInputValues.email);
@@ -82,7 +81,7 @@ const update = async (id, userInputValues) => {
       atualizado_em: new Date(),
     },
   });
-  console.log("atualizado", newUser);
+
   return newUser;
 };
 const user = {

@@ -23,7 +23,6 @@ const middleware = async (req, res, next) => {
 
 const canAccess = (requiredPermission) => {
   return (req, res, next) => {
-    console.log("USER", req.user);
     if (!req.user) {
       throw new UnAuthorizedError(
         "Acesso não autorizado.",

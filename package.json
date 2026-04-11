@@ -17,6 +17,7 @@
     "dev": " npm run services:up && npm run wait-for-postgres && npm run migration:up && next dev ",
     "services:up": "docker compose -f infra/compose.yaml up -d",
     "services:stop": "docker compose -f infra/compose.yaml down",
+    "services:delete": "npm run services:stop && docker system prune -a",
     "migration:create": "prisma migrate dev",
     "migration:up": "prisma migrate deploy",
     "build": "next build",

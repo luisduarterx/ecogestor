@@ -36,14 +36,13 @@ router.patch(authorization.canAccess("update:user"), async (req, res) => {
   const data = InputSchema.safeParse(userInputValues);
 
   if (!data.success) {
-    console.log("DATA ERROR:", data.error);
     throw new ValidationError("Dados de entrada inválidos");
   }
 
   userInputValues = data.data;
 
   const updatedUser = await user.update(id, userInputValues);
-  console.log("UPDATED: ", updatedUser);
+
   res.status(200).json(updatedUser);
 });
 export default router.handler({

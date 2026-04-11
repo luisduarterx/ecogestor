@@ -4,7 +4,7 @@ import user from "./user";
 const userAuth = async (emailEnviado, senhaEnviada) => {
   try {
     const usuarioArmazenado = await user.findUserByEmail(emailEnviado);
-    console.log("USUÁRIO ARMAZENADO: ", usuarioArmazenado);
+
     if (!usuarioArmazenado) {
       throw new UnAuthorizedError("Erro durante a autenticação.");
     }
@@ -19,7 +19,6 @@ const userAuth = async (emailEnviado, senhaEnviada) => {
 
     return usuarioArmazenado;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
