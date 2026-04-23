@@ -4,6 +4,8 @@ import { prisma } from "infra/database";
 import session from "models/session";
 import crypto from "node:crypto";
 import user from "models/user";
+import registro from "models/registros";
+import status from "pages/api/v1/status";
 
 async function waitForAllServices() {
   await waitForWebServer();
@@ -62,6 +64,28 @@ async function createPerfilWithoutPermissions(permissoes) {
     },
   });
 }
+async function createRegistro(registroInputArguments) {
+  return await registro.create({
+    nome: registroInputArguments.nome,
+    cpf: registroInputArguments.cpf,
+    cnpj: registroInputArguments.cnpj,
+    ie: registroInputArguments.ie,
+    email: registroInputArguments.email || faker.internet.email(),
+    tipo_registro: registroInputArguments.tipo_registro,
+    data_nascimento:
+      registroInputArguments.data_nascimento || faker.date.birthdate(),
+    whatsapp:
+      registroInputArguments.whatsapp ||
+      faker.phone.number({ style: "international" }),
+    cep: registroInputArguments.cep || faker.location.zipCode("########"),
+    logradouro: registroInputArguments.logradouro || faker.location.street(),
+    numero: registroInputArguments.numero || faker.location.buildingNumber(),
+    complemento: registroInputArguments.complemento,
+    bairro: registroInputArguments.bairro || faker.location.county(),
+    cidade: registroInputArguments.cidade || faker.location.city(),
+    estado: registroInputArguments.estado || faker.location.country(),
+  });
+}
 
 async function createUser(userInputArguments) {
   return await user.create({
@@ -94,6 +118,7 @@ const orchestrator = {
   seedDatabase,
   createSessionExpired,
   createPerfilWithoutPermissions,
+  createRegistro,
 };
 
 export default orchestrator;

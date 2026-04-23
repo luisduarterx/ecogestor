@@ -3,22 +3,24 @@ import controller from "infra/controller";
 import z from "zod";
 import { ValidationError } from "infra/errors";
 import authorization from "models/authorization";
-import { tipo_registro } from "@prisma/client";
-import user from "models/user";
 import registro from "models/registros";
+
 const router = createRouter();
 router.use(authorization.middleware);
-router.post(authorization.canAccess("create:registro"), async (req, res) => {
-  const userInputValues = req.body;
+router.put(authorization.canAccess("update:registro"), async (req, res) => {
+  const data = req.body;
+  const id = Number(req.query.id);
+  const idParsed = z.number().safeParse(id);
+  if (!idParsed.success) {
+    throw new ValidationError();
+  }
 
-  const schema = z.object({
-    nome: z.string().min(1),
-    cpf: z.string().max(11).min(11).optional(),
+  console.log("params", id);
+  const dataSchema = z.object({
+    nome: z.string().min(1).optional(),
     email: z.string().email().optional(),
-    tipo_registro: z.enum(["F", "J"]),
     data_nascimento: z.string().optional(),
     whatsapp: z.string().optional(),
-    cnpj: z.string().max(14).min(14).optional(),
     ie: z.string().optional(),
     cep: z.string().max(8).min(8).optional(),
     logradouro: z.string().optional(),
@@ -27,27 +29,21 @@ router.post(authorization.canAccess("create:registro"), async (req, res) => {
     bairro: z.string().optional(),
     cidade: z.string().optional(),
     estado: z.string().optional(),
+    status: z.boolean().optional(),
+    cnpj: z.string().max(14).min(14).optional(),
+    cpf: z.string().max(11).min(11).optional(),
   });
-
-  const dataParsed = schema.safeParse(userInputValues);
+  // terminar de fazer a validacao dos dados
+  const dataParsed = dataSchema.safeParse(data);
 
   if (!dataParsed.success) {
+    console.log(dataParsed.error);
     throw new ValidationError();
   }
-  if (
-    (dataParsed.data.tipo_registro === "F" && dataParsed.data.cnpj) ||
-    (dataParsed.data.tipo_registro === "J" && dataParsed.data.cpf)
-  ) {
-    throw new ValidationError(
-      "Não é permitido criar um registro com CPF e CNPJ preenchidos ao mesmo tempo.",
-    );
-  }
 
-  const newRecord = await registro.create(dataParsed.data);
-
-  res.status(201).json(newRecord);
+  const registroUpdated = await registro.update(dataParsed.data, id);
+  res.status(200).json(registroUpdated);
 });
-
 export default router.handler({
   onNoMatch: controller.onNoMatchHandler,
   onError: controller.onErrorHandler,
