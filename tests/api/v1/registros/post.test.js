@@ -433,4 +433,30 @@ describe("POST /api/v1/registros", () => {
       expect(response.status).toBe(401);
     });
   });
+  describe("Usuario não autenticado", () => {
+    test("Com dados obrigatórios válidos", async () => {
+      const response = await fetch("http://localhost:3000/api/v1/registros", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          nome: "Luis CLaudio Duarte",
+          tipo_registro: "F",
+          cpf: "1828283457",
+        }),
+      });
+
+      const responseBody = await response.json();
+
+      expect(responseBody).toEqual({
+        message: "Acesso não autorizado.",
+        name: "UnAuthorizedError",
+        status_code: 401,
+        action: "Você precisa estar autenticado para acessar esse recurso.",
+      });
+
+      expect(response.status).toBe(401);
+    });
+  });
 });
