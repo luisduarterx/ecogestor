@@ -1,4 +1,5 @@
 import { tipo_registro } from "@prisma/client";
+import status from "pages/api/v1/status";
 import orchestrator from "tests/orchestrator";
 import { version as uuidVersion } from "uuid";
 
@@ -78,6 +79,45 @@ describe("PUT /api/v1/registros/id", () => {
         expect(Date.parse(responseBody.atualizado_em)).not.toBeNaN();
         expect(response.status).toBe(200);
       });
+      test("Altera status do registro", async () => {
+        const user = await orchestrator.createUser({
+          nome: "ADMINISTRADOR",
+        });
+        const session = await orchestrator.createSession(user.id);
+
+        const registro = await orchestrator.createRegistro({
+          nome: "REGISTRO21",
+          cpf: "12345678921",
+          tipo_registro: "F",
+        });
+
+        const response = await fetch(
+          `http://localhost:3000/api/v1/registros/${registro.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-type": "application/json",
+              Cookie: `sid=${session.token}`,
+            },
+            body: JSON.stringify({
+              status: false,
+            }),
+          },
+        );
+
+        const responseBody = await response.json();
+
+        expect(responseBody).toEqual({
+          ...responseBody,
+          nome: "REGISTRO21",
+          cpf: "12345678921",
+          status: false,
+        });
+
+        expect(Date.parse(responseBody.criado_em)).not.toBeNaN();
+        expect(Date.parse(responseBody.atualizado_em)).not.toBeNaN();
+        expect(response.status).toBe(200);
+      });
       test("Registro não existente", async () => {
         const user = await orchestrator.createUser({
           nome: "ADMINISTRADOR",
@@ -147,6 +187,7 @@ describe("PUT /api/v1/registros/id", () => {
         });
         expect(response.status).toEqual(400);
       });
+
       //   test("Alterar CPF", async () => {
       //     const user = await orchestrator.createUser({
       //       nome: "ADMINISTRADOR",

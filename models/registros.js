@@ -97,6 +97,7 @@ const update = async (data, id) => {
       bairro: data.bairro,
       cidade: data.cidade,
       estado: data.estado,
+      status: data.status,
       atualizado_em: new Date(),
     },
   });
