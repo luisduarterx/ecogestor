@@ -30,6 +30,7 @@ async function clearDatabase() {
 
   await prisma.users.deleteMany();
   await prisma.registros.deleteMany();
+  await prisma.categorias.deleteMany();
 }
 async function seedDatabase() {
   const permissoes = [
@@ -41,6 +42,10 @@ async function seedDatabase() {
     "read:registro",
     "update:registro",
     "delete:registro",
+    "create:categorias",
+    "read:categorias",
+    "update:categorias",
+    "delete:categorias",
   ];
   await prisma.perfis.upsert({
     where: {

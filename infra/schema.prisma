@@ -63,5 +63,18 @@ enum tipo_registro{
   F
   J
 }
+model categorias{
+  id Int @id @default(autoincrement())
+  nome String
+  materiais material[]
+
+}
+model material{
+  id Int @id @default(autoincrement())
+  categoria_id Int 
+  categoria categorias @relation(fields:[categoria_id],references:[id])
+  nome String
+  preco_venda Decimal @db.Decimal(10,2)
+}
 
  
