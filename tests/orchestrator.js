@@ -91,6 +91,13 @@ async function createRegistro(registroInputArguments) {
     estado: registroInputArguments.estado || faker.location.country(),
   });
 }
+async function createCategoria(categoriaInputArguments) {
+  return await prisma.categorias.create({
+    data: {
+      nome: categoriaInputArguments.nome.toUpperCase(),
+    },
+  });
+}
 
 async function createUser(userInputArguments) {
   return await user.create({
@@ -124,6 +131,7 @@ const orchestrator = {
   createSessionExpired,
   createPerfilWithoutPermissions,
   createRegistro,
+  createCategoria,
 };
 
 export default orchestrator;

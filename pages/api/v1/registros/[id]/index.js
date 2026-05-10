@@ -15,7 +15,6 @@ router.put(authorization.canAccess("update:registro"), async (req, res) => {
     throw new ValidationError();
   }
 
-  console.log("params", id);
   const dataSchema = z.object({
     nome: z.string().min(1).optional(),
     email: z.string().email().optional(),
@@ -37,7 +36,6 @@ router.put(authorization.canAccess("update:registro"), async (req, res) => {
   const dataParsed = dataSchema.safeParse(data);
 
   if (!dataParsed.success) {
-    console.log(dataParsed.error);
     throw new ValidationError();
   }
 

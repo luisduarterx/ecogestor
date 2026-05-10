@@ -11,7 +11,7 @@ router.post(authorization.canAccess("create:categorias"), async (req, res) => {
   const inputValues = req.body;
 
   const schema = z.object({
-    nome: z.string().min(3).max(100),
+    nome: z.string().min(3).max(100).toUpperCase(),
   });
 
   const dataParsed = schema.safeParse(inputValues);
