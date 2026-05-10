@@ -114,6 +114,7 @@ describe("PUT /api/v1/registros/id", () => {
           status: false,
         });
 
+        expect(responseBody.atualizado_em > responseBody.criado_em).toBe(true);
         expect(Date.parse(responseBody.criado_em)).not.toBeNaN();
         expect(Date.parse(responseBody.atualizado_em)).not.toBeNaN();
         expect(response.status).toBe(200);

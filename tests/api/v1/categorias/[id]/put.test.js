@@ -29,6 +29,7 @@ describe("PUT /api/v1/categorias", () => {
           },
           body: JSON.stringify({
             nome: "Nome atualizado",
+            status: false,
           }),
         },
       );
@@ -38,7 +39,13 @@ describe("PUT /api/v1/categorias", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         nome: "NOME ATUALIZADO",
+        criado_em: responseBody.criado_em,
+        atualizado_em: responseBody.atualizado_em,
+        status: false,
       });
+      expect(responseBody.atualizado_em > responseBody.criado_em).toBe(true);
+      expect(Date.parse(responseBody.criado_em)).not.toBeNaN();
+      expect(Date.parse(responseBody.atualizado_em)).not.toBeNaN();
 
       expect(response.status).toBe(200);
     });

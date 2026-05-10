@@ -52,6 +52,8 @@ describe("PATCH /api/v1/users/[id]", () => {
         atualizado_em: responseBody.atualizado_em,
       });
       expect(responseBody.atualizado_em > responseBody.criado_em).toBe(true);
+      expect(Date.parse(responseBody.criado_em)).not.toBeNaN();
+      expect(Date.parse(responseBody.atualizado_em)).not.toBeNaN();
     });
     test("Com email duplicado", async () => {
       const usuarioAutenticado = await orchestrator.createUser({

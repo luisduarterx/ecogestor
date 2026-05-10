@@ -53,6 +53,8 @@ const update = async (data, id) => {
     },
     data: {
       nome: data.nome ? data.nome.toUpperCase() : categoriaAtual.nome,
+      atualizado_em: new Date(),
+      status: data.status !== undefined ? data.status : categoriaAtual.status,
     },
   });
 

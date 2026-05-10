@@ -17,6 +17,7 @@ router.put(authorization.canAccess("update:categorias"), async (req, res) => {
 
   const dataSchema = z.object({
     nome: z.string().min(3).toUpperCase(),
+    status: z.boolean().optional(),
   });
 
   // terminar de fazer a validacao dos dados

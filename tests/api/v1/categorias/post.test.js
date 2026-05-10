@@ -32,7 +32,13 @@ describe("POST /api/v1/categorias", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         nome: "ELETRÔNICOS",
+        criado_em: responseBody.criado_em,
+        atualizado_em: responseBody.atualizado_em,
+        status: true,
       });
+
+      expect(Date.parse(responseBody.criado_em)).not.toBeNaN();
+      expect(Date.parse(responseBody.atualizado_em)).not.toBeNaN();
 
       expect(response.status).toBe(201);
     });
