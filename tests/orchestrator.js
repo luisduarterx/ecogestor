@@ -30,6 +30,7 @@ async function clearDatabase() {
 
   await prisma.users.deleteMany();
   await prisma.registros.deleteMany();
+  await prisma.categorias.deleteMany();
 }
 async function seedDatabase() {
   const permissoes = [
@@ -41,6 +42,10 @@ async function seedDatabase() {
     "read:registro",
     "update:registro",
     "delete:registro",
+    "create:categorias",
+    "read:categorias",
+    "update:categorias",
+    "delete:categorias",
   ];
   await prisma.perfis.upsert({
     where: {
@@ -86,6 +91,13 @@ async function createRegistro(registroInputArguments) {
     estado: registroInputArguments.estado || faker.location.country(),
   });
 }
+async function createCategoria(categoriaInputArguments) {
+  return await prisma.categorias.create({
+    data: {
+      nome: categoriaInputArguments.nome.toUpperCase(),
+    },
+  });
+}
 
 async function createUser(userInputArguments) {
   return await user.create({
@@ -119,6 +131,7 @@ const orchestrator = {
   createSessionExpired,
   createPerfilWithoutPermissions,
   createRegistro,
+  createCategoria,
 };
 
 export default orchestrator;
