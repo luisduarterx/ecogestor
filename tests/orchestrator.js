@@ -5,7 +5,9 @@ import session from "models/session";
 import crypto from "node:crypto";
 import user from "models/user";
 import registro from "models/registros";
-import status from "pages/api/v1/status";
+
+import categoria from "models/categorias";
+import material from "models/materiais";
 
 async function waitForAllServices() {
   await waitForWebServer();
@@ -30,6 +32,7 @@ async function clearDatabase() {
 
   await prisma.users.deleteMany();
   await prisma.registros.deleteMany();
+  await prisma.material.deleteMany();
   await prisma.categorias.deleteMany();
 }
 async function seedDatabase() {
@@ -46,6 +49,10 @@ async function seedDatabase() {
     "read:categorias",
     "update:categorias",
     "delete:categorias",
+    "create:material",
+    "read:material",
+    "update:material",
+    "delete:material",
   ];
   await prisma.perfis.upsert({
     where: {
@@ -92,10 +99,15 @@ async function createRegistro(registroInputArguments) {
   });
 }
 async function createCategoria(categoriaInputArguments) {
-  return await prisma.categorias.create({
-    data: {
-      nome: categoriaInputArguments.nome.toUpperCase(),
-    },
+  return await categoria.create({
+    nome: categoriaInputArguments.nome,
+  });
+}
+async function createMaterial(materialInputArguments) {
+  return await material.create({
+    nome: materialInputArguments.nome,
+    preco_venda: materialInputArguments.preco_venda,
+    categoria_id: materialInputArguments.categoria_id,
   });
 }
 
@@ -132,6 +144,7 @@ const orchestrator = {
   createPerfilWithoutPermissions,
   createRegistro,
   createCategoria,
+  createMaterial,
 };
 
 export default orchestrator;
