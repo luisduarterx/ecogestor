@@ -8,6 +8,7 @@ import registro from "models/registros";
 
 import categoria from "models/categorias";
 import material from "models/materiais";
+import tabela from "models/tabelas";
 
 async function waitForAllServices() {
   await waitForWebServer();
@@ -29,7 +30,8 @@ async function waitForAllServices() {
 }
 async function clearDatabase() {
   await prisma.sessions.deleteMany();
-
+  await prisma.material_tabela.deleteMany();
+  await prisma.tabela.deleteMany();
   await prisma.users.deleteMany();
   await prisma.registros.deleteMany();
   await prisma.material.deleteMany();
@@ -53,6 +55,10 @@ async function seedDatabase() {
     "read:material",
     "update:material",
     "delete:material",
+    "create:tabela",
+    "read:tabela",
+    "update:tabela",
+    "delete:tabela",
   ];
   await prisma.perfis.upsert({
     where: {
@@ -103,6 +109,12 @@ async function createCategoria(categoriaInputArguments) {
     nome: categoriaInputArguments.nome,
   });
 }
+async function createTabela(tabelaInputArguments) {
+  return await tabela.create({
+    nome: tabelaInputArguments.nome,
+    materiais: tabelaInputArguments.materiais,
+  });
+}
 async function createMaterial(materialInputArguments) {
   return await material.create({
     nome: materialInputArguments.nome,
@@ -145,6 +157,7 @@ const orchestrator = {
   createRegistro,
   createCategoria,
   createMaterial,
+  createTabela,
 };
 
 export default orchestrator;
