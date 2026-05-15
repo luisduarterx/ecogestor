@@ -8,6 +8,7 @@ import registro from "models/registros";
 
 import categoria from "models/categorias";
 import material from "models/materiais";
+import tabela from "models/tabelas";
 
 async function waitForAllServices() {
   await waitForWebServer();
@@ -32,6 +33,12 @@ async function clearDatabase() {
 
   await prisma.users.deleteMany();
   await prisma.registros.deleteMany();
+  await prisma.material_tabela.deleteMany();
+  await prisma.tabela.deleteMany({
+    where: {
+      id: { not: { equals: 1 } },
+    },
+  });
   await prisma.material.deleteMany();
   await prisma.categorias.deleteMany();
 }
@@ -53,6 +60,10 @@ async function seedDatabase() {
     "read:material",
     "update:material",
     "delete:material",
+    "create:tabela",
+    "read:tabela",
+    "update:tabela",
+    "delete:tabela",
   ];
   await prisma.perfis.upsert({
     where: {
@@ -62,6 +73,18 @@ async function seedDatabase() {
     create: {
       nome: "Admin",
       permissoes,
+    },
+  });
+
+  await prisma.tabela.upsert({
+    where: {
+      id: 1,
+    },
+    update: {
+      nome: "Tabela Padrão",
+    },
+    create: {
+      nome: "Tabela Padrão",
     },
   });
 }
@@ -101,6 +124,12 @@ async function createRegistro(registroInputArguments) {
 async function createCategoria(categoriaInputArguments) {
   return await categoria.create({
     nome: categoriaInputArguments.nome,
+  });
+}
+async function createTabela(tabelaInputArguments) {
+  return await tabela.create({
+    nome: tabelaInputArguments.nome,
+    materiais: tabelaInputArguments.materiais,
   });
 }
 async function createMaterial(materialInputArguments) {
@@ -145,6 +174,7 @@ const orchestrator = {
   createRegistro,
   createCategoria,
   createMaterial,
+  createTabela,
 };
 
 export default orchestrator;

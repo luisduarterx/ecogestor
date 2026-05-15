@@ -14,6 +14,7 @@ router.post(authorization.canAccess("create:registro"), async (req, res) => {
   const schema = z.object({
     nome: z.string().min(1),
     cpf: z.string().max(11).min(11).optional(),
+    tabela_id: z.number().positive().optional(),
     email: z.string().email().optional(),
     tipo_registro: z.enum(["F", "J"]),
     data_nascimento: z.string().optional(),
