@@ -31,6 +31,7 @@ const create = async (data) => {
       data_nascimento: data.data_nascimento
         ? new Date(data.data_nascimento)
         : null,
+      tabela_id: data.tabela_id || 1,
       whatsapp: data.whatsapp,
       cnpj: data.cnpj,
       ie: data.ie,

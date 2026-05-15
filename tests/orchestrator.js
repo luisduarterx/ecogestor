@@ -30,10 +30,15 @@ async function waitForAllServices() {
 }
 async function clearDatabase() {
   await prisma.sessions.deleteMany();
-  await prisma.material_tabela.deleteMany();
-  await prisma.tabela.deleteMany();
+
   await prisma.users.deleteMany();
   await prisma.registros.deleteMany();
+  await prisma.material_tabela.deleteMany();
+  await prisma.tabela.deleteMany({
+    where: {
+      id: { not: { equals: 1 } },
+    },
+  });
   await prisma.material.deleteMany();
   await prisma.categorias.deleteMany();
 }
@@ -68,6 +73,18 @@ async function seedDatabase() {
     create: {
       nome: "Admin",
       permissoes,
+    },
+  });
+
+  await prisma.tabela.upsert({
+    where: {
+      id: 1,
+    },
+    update: {
+      nome: "Tabela Padrão",
+    },
+    create: {
+      nome: "Tabela Padrão",
     },
   });
 }
