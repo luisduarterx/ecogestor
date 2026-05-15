@@ -30,6 +30,16 @@ router.put(authorization.canAccess("update:categorias"), async (req, res) => {
   const categoriaUpdated = await categoria.update(dataParsed.data, id);
   res.status(200).json(categoriaUpdated);
 });
+router.get(authorization.canAccess("read:categorias"), async (req, res) => {
+  const id = Number(req.query.id);
+  const idParsed = z.number().safeParse(id);
+  if (!idParsed.success) {
+    throw new ValidationError();
+  }
+
+  const categoriaEncontrada = await categoria.findById(id);
+  res.status(200).json(categoriaEncontrada);
+});
 export default router.handler({
   onNoMatch: controller.onNoMatchHandler,
   onError: controller.onErrorHandler,

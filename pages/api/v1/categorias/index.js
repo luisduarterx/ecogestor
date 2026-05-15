@@ -24,6 +24,11 @@ router.post(authorization.canAccess("create:categorias"), async (req, res) => {
 
   res.status(201).json(newCategory);
 });
+router.get(authorization.canAccess("read:categorias"), async (req, res) => {
+  const { nome, ordem } = req.query;
+  const categorias = await categoria.findAll({ nome, ordem });
+  res.status(200).json(categorias);
+});
 
 export default router.handler({
   onNoMatch: controller.onNoMatchHandler,
