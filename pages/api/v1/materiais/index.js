@@ -9,7 +9,9 @@ import material from "models/materiais";
 const router = createRouter();
 router.use(authorization.middleware);
 router.get(authorization.canAccess("read:material"), async (req, res) => {
-  const materiais = await material.findAll();
+  const { nome, categoria_id } = req.query;
+
+  const materiais = await material.findAll({ nome, categoria_id });
   res.status(200).json(materiais);
 });
 router.post(authorization.canAccess("create:material"), async (req, res) => {
