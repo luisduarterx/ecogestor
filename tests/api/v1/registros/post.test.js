@@ -2,7 +2,7 @@ import { tipo_registro } from "@prisma/client";
 import orchestrator from "tests/orchestrator";
 import { version as uuidVersion } from "uuid";
 
-beforeAll(async () => {
+beforeEach(async () => {
   await orchestrator.clearDatabase();
   await orchestrator.seedDatabase();
   await orchestrator.createPerfilWithoutPermissions();
@@ -119,6 +119,11 @@ describe("POST /api/v1/registros", () => {
       test("Registro já existente", async () => {
         const user = await orchestrator.createUser({
           nome: "ADMINISTRADOR",
+        });
+        const novoRegistro = await orchestrator.createRegistro({
+          nome: "Luis CLaudio Duarte",
+          cpf: "18282834577",
+          tipo_registro: "F",
         });
         const session = await orchestrator.createSession(user.id);
         const response = await fetch("http://localhost:3000/api/v1/registros", {
@@ -284,6 +289,11 @@ describe("POST /api/v1/registros", () => {
           nome: "ADMINISTRADOR",
         });
         const session = await orchestrator.createSession(user.id);
+        const novoRegistro = await orchestrator.createRegistro({
+          nome: "Empresa Nova",
+          cnpj: "12345678901234",
+          tipo_registro: "J",
+        });
         const response = await fetch("http://localhost:3000/api/v1/registros", {
           method: "POST",
           headers: {

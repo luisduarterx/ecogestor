@@ -110,7 +110,7 @@ const findAll = async (filtros) => {
   try {
     //futuramente mudar o where para fora da chamada ao banco
     const offset = (filtros.page - 1) * filtros.limit;
-    console.log("valor do status e esse:", filtros);
+
     filtros.status = filtros.status == "false" ? false : true;
     const registros = await prisma.registros.findMany({
       where: {
@@ -136,9 +136,6 @@ const findAll = async (filtros) => {
               cnpj: {
                 contains: filtros.search,
               },
-            },
-            {
-              tipo_registro: filtros.tipo,
             },
           ],
         }),

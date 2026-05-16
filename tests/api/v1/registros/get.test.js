@@ -1,7 +1,7 @@
 import { tipo_registro } from "@prisma/client";
 import orchestrator from "tests/orchestrator";
 
-beforeAll(async () => {
+beforeEach(async () => {
   await orchestrator.clearDatabase();
   await orchestrator.seedDatabase();
   await orchestrator.createPerfilWithoutPermissions();
@@ -68,7 +68,7 @@ describe("GET /api/v1/registros", () => {
       });
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/registros?page=1&limit=10&tipo=J",
+        "http://localhost:3000/api/v1/registros?page=1&limit=10&tipo=F",
         {
           method: "GET",
           headers: {

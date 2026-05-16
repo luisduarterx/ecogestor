@@ -1,6 +1,6 @@
 import orchestrator from "tests/orchestrator";
 
-beforeAll(async () => {
+beforeEach(async () => {
   await orchestrator.clearDatabase();
   await orchestrator.seedDatabase();
   await orchestrator.createPerfilWithoutPermissions();
@@ -76,6 +76,11 @@ describe("PATCH /api/v1/materiais/[id]", () => {
       const material = await orchestrator.createMaterial({
         nome: "MATERIAL 01",
         preco_venda: 20,
+        categoria_id: categoria.id,
+      });
+      const material2 = await orchestrator.createMaterial({
+        nome: "MATERIAL EDITADO",
+        preco_venda: 30,
         categoria_id: categoria.id,
       });
 

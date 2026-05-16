@@ -1,7 +1,7 @@
 import orchestrator from "tests/orchestrator";
 import { version as uuidVersion } from "uuid";
 
-beforeAll(async () => {
+beforeEach(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
   await orchestrator.seedDatabase();
@@ -24,7 +24,7 @@ describe("GET /api/v1/users/[id]", () => {
         senha: "senha123",
       });
 
-      const response2 = await fetch(
+      const response = await fetch(
         `http://localhost:3000/api/v1/users/${user.id}`,
         {
           headers: {
@@ -33,18 +33,18 @@ describe("GET /api/v1/users/[id]", () => {
         },
       );
 
-      const response2Body = await response2.json();
+      const responseBody = await response.json();
 
-      expect(response2Body).toEqual({
+      expect(responseBody).toEqual({
         id: user.id,
         nome: "User Teste",
         email: "teste1@gmail.com",
         perfil_id: user.perfil_id,
-        senha: response2Body.senha,
-        criado_em: response2Body.criado_em,
-        atualizado_em: response2Body.atualizado_em,
+        perfil: { nome: responseBody.perfil.nome },
+        criado_em: responseBody.criado_em,
+        atualizado_em: responseBody.atualizado_em,
       });
-      expect(response2.status).toBe(200);
+      expect(response.status).toBe(200);
     });
     test("Com id inválido", async () => {
       const usuarioAutenticado = await orchestrator.createUser({

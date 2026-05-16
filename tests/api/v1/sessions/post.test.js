@@ -2,7 +2,7 @@ import orchestrator from "tests/orchestrator";
 import { version as uuidVersion } from "uuid";
 import setCookieParser from "set-cookie-parser";
 
-beforeAll(async () => {
+beforeEach(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
 });

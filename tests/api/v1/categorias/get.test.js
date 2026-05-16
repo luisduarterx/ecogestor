@@ -1,6 +1,6 @@
 import orchestrator from "tests/orchestrator";
 
-beforeAll(async () => {
+beforeEach(async () => {
   await orchestrator.clearDatabase();
   await orchestrator.seedDatabase();
   await orchestrator.createPerfilWithoutPermissions();
@@ -150,11 +150,12 @@ describe("GET /api/v1/categorias", () => {
       const responseBody = await response.json();
 
       expect(Array.isArray(responseBody)).toBe(true);
-      expect(responseBody).toHaveLength(6);
+      expect(responseBody).toHaveLength(2);
 
       expect(Date.parse(responseBody[0].criado_em)).not.toBeNaN();
       expect(Date.parse(responseBody[0].atualizado_em)).not.toBeNaN();
-
+      expect(responseBody[0].nome).toEqual("CATEGORIA 5");
+      expect(responseBody[1].nome).toEqual("CATEGORIA 6");
       expect(response.status).toBe(200);
     });
     test("Busca por categoria e ordenacao", async () => {
@@ -163,7 +164,16 @@ describe("GET /api/v1/categorias", () => {
       });
       const session = await orchestrator.createSession(user.id);
       const categoria1 = await orchestrator.createCategoria({
-        nome: "CATEGORIA 7",
+        nome: "CATEGORIA 1",
+      });
+      const categoria2 = await orchestrator.createCategoria({
+        nome: "CATEGORIA 2",
+      });
+      const categoria3 = await orchestrator.createCategoria({
+        nome: "CATEGORIA 3",
+      });
+      const categoria4 = await orchestrator.createCategoria({
+        nome: "CATEGORIA 4",
       });
 
       const response = await fetch(
@@ -180,20 +190,20 @@ describe("GET /api/v1/categorias", () => {
       const responseBody = await response.json();
 
       expect(Array.isArray(responseBody)).toBe(true);
-      expect(responseBody).toHaveLength(7);
+      expect(responseBody).toHaveLength(4);
 
       expect(responseBody[0]).toEqual({
         id: responseBody[0].id,
-        nome: "CATEGORIA 01",
+        nome: "CATEGORIA 1",
         criado_em: responseBody[0].criado_em,
         atualizado_em: responseBody[0].atualizado_em,
         status: true,
       });
-      expect(responseBody[6]).toEqual({
-        id: responseBody[6].id,
-        nome: "CATEGORIA 7",
-        criado_em: responseBody[6].criado_em,
-        atualizado_em: responseBody[6].atualizado_em,
+      expect(responseBody[3]).toEqual({
+        id: responseBody[3].id,
+        nome: "CATEGORIA 4",
+        criado_em: responseBody[3].criado_em,
+        atualizado_em: responseBody[3].atualizado_em,
         status: true,
       });
 

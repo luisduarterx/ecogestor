@@ -63,8 +63,6 @@ router.get(authorization.canAccess("read:registro"), async (req, res) => {
     throw new ValidationError("Parâmetros de paginação inválidos.");
   }
 
-  const offset = (pageNumber - 1) * limitNumber;
-
   const registros = await registro.findAll({
     page,
     limit,

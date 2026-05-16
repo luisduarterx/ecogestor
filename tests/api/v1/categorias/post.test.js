@@ -2,7 +2,7 @@ import { tipo_registro } from "@prisma/client";
 import orchestrator from "tests/orchestrator";
 import { version as uuidVersion } from "uuid";
 
-beforeAll(async () => {
+beforeEach(async () => {
   await orchestrator.clearDatabase();
   await orchestrator.seedDatabase();
   await orchestrator.createPerfilWithoutPermissions();
@@ -45,6 +45,9 @@ describe("POST /api/v1/categorias", () => {
     test("Com nome duplicado", async () => {
       const user = await orchestrator.createUser({
         nome: "ADMINISTRADOR",
+      });
+      const categoria = await orchestrator.createCategoria({
+        nome: "Eletrônicos",
       });
       const session = await orchestrator.createSession(user.id);
       const response = await fetch("http://localhost:3000/api/v1/categorias", {

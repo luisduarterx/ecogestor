@@ -1,7 +1,7 @@
 import orchestrator from "tests/orchestrator";
 import { version as uuidVersion } from "uuid";
 
-beforeAll(async () => {
+beforeEach(async () => {
   await orchestrator.clearDatabase();
   await orchestrator.seedDatabase();
   await orchestrator.createPerfilWithoutPermissions();
@@ -48,6 +48,7 @@ describe("POST /api/v1/users", () => {
     test("Com email já existente", async () => {
       const user = await orchestrator.createUser({
         nome: "Padrão de teste 2",
+        email: "luiscdradm@gmail.com",
       });
       const session = await orchestrator.createSession(user.id);
       const response = await fetch("http://localhost:3000/api/v1/users", {

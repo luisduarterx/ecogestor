@@ -2,7 +2,7 @@ import { tipo_registro } from "@prisma/client";
 import orchestrator from "tests/orchestrator";
 import { version as uuidVersion } from "uuid";
 
-beforeAll(async () => {
+beforeEach(async () => {
   await orchestrator.clearDatabase();
   await orchestrator.seedDatabase();
   await orchestrator.createPerfilWithoutPermissions();

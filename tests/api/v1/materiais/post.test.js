@@ -1,6 +1,6 @@
 import orchestrator from "tests/orchestrator";
 
-beforeAll(async () => {
+beforeEach(async () => {
   await orchestrator.clearDatabase();
   await orchestrator.seedDatabase();
   await orchestrator.createPerfilWithoutPermissions();
@@ -58,6 +58,11 @@ describe("POST /api/v1/materiais", () => {
       const session = await orchestrator.createSession(user.id);
       const categoria = await orchestrator.createCategoria({
         nome: "CATEGORIA 02",
+      });
+      const material = await orchestrator.createMaterial({
+        nome: "MATERIAL 01",
+        preco_venda: 20,
+        categoria_id: categoria.id,
       });
       const response = await fetch("http://localhost:3000/api/v1/materiais", {
         method: "POST",

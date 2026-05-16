@@ -64,6 +64,10 @@ async function seedDatabase() {
     "read:tabela",
     "update:tabela",
     "delete:tabela",
+    "create:users",
+    "read:users",
+    "update:users",
+    "delete:users",
   ];
   await prisma.perfis.upsert({
     where: {
