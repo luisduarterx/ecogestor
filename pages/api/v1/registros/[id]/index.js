@@ -42,6 +42,16 @@ router.put(authorization.canAccess("update:registro"), async (req, res) => {
   const registroUpdated = await registro.update(dataParsed.data, id);
   res.status(200).json(registroUpdated);
 });
+router.get(authorization.canAccess("read:registro"), async (req, res) => {
+  const id = Number(req.query.id);
+  const idParsed = z.number().safeParse(id);
+  if (!idParsed.success) {
+    throw new ValidationError();
+  }
+
+  const registroFound = await registro.findById(id);
+  res.status(200).json(registroFound);
+});
 export default router.handler({
   onNoMatch: controller.onNoMatchHandler,
   onError: controller.onErrorHandler,

@@ -1,6 +1,6 @@
 import { tipo_registro } from "@prisma/client";
 import { prisma } from "infra/database";
-import { ValidationError } from "infra/errors";
+import { ValidationError, NotFoundError } from "infra/errors";
 
 const create = async (data) => {
   const existingRegistro = await prisma.registros.findFirst({
@@ -151,11 +151,26 @@ const findAll = async (filtros) => {
     throw error;
   }
 };
+const findById = async (id) => {
+  const registroFound = await prisma.registros.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  if (!registroFound) {
+    throw new NotFoundError(
+      "Registro não encontrado.",
+      "O registro que você está tentando acessar não existe ou foi removido.",
+    );
+  }
+  return registroFound;
+};
 
 const registro = {
   create,
   update,
   findAll,
+  findById,
 };
 
 export default registro;
