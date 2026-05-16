@@ -1,3 +1,4 @@
+import { tipo_registro } from "@prisma/client";
 import { prisma } from "infra/database";
 import { ValidationError } from "infra/errors";
 
@@ -42,6 +43,7 @@ const create = async (data) => {
       bairro: data.bairro,
       cidade: data.cidade,
       estado: data.estado,
+      status: data.status ?? true,
     },
   });
 
@@ -104,10 +106,59 @@ const update = async (data, id) => {
   });
   return updatedRegistro;
 };
+const findAll = async (filtros) => {
+  try {
+    //futuramente mudar o where para fora da chamada ao banco
+    const offset = (filtros.page - 1) * filtros.limit;
+    console.log("valor do status e esse:", filtros);
+    filtros.status = filtros.status == "false" ? false : true;
+    const registros = await prisma.registros.findMany({
+      where: {
+        status: filtros.status,
+
+        ...(filtros.tipo && {
+          tipo_registro: filtros.tipo,
+        }),
+        ...(filtros.search && {
+          OR: [
+            {
+              nome: {
+                contains: filtros.search,
+                mode: "insensitive",
+              },
+            },
+            {
+              cpf: {
+                contains: filtros.search,
+              },
+            },
+            {
+              cnpj: {
+                contains: filtros.search,
+              },
+            },
+            {
+              tipo_registro: filtros.tipo,
+            },
+          ],
+        }),
+      },
+
+      skip: offset,
+      take: Number(filtros.limit),
+    });
+
+    return registros;
+  } catch (error) {
+    console.log("O ERRO FOI ESSE", error);
+    throw error;
+  }
+};
 
 const registro = {
   create,
   update,
+  findAll,
 };
 
 export default registro;

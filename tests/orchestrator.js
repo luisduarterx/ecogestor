@@ -101,7 +101,7 @@ async function createPerfilWithoutPermissions(permissoes) {
 }
 async function createRegistro(registroInputArguments) {
   return await registro.create({
-    nome: registroInputArguments.nome,
+    nome: registroInputArguments.nome || faker.person.fullName(),
     cpf: registroInputArguments.cpf,
     cnpj: registroInputArguments.cnpj,
     ie: registroInputArguments.ie,
@@ -119,6 +119,7 @@ async function createRegistro(registroInputArguments) {
     bairro: registroInputArguments.bairro || faker.location.county(),
     cidade: registroInputArguments.cidade || faker.location.city(),
     estado: registroInputArguments.estado || faker.location.country(),
+    status: registroInputArguments.status ?? true,
   });
 }
 async function createCategoria(categoriaInputArguments) {
