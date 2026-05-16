@@ -26,6 +26,30 @@ router.post(authorization.canAccess("create:user"), async (req, res) => {
 
   res.status(201).json(newUser);
 });
+router.get(authorization.canAccess("read:users"), async (req, res) => {
+  const { page, limit, perfil_id, search } = req.query;
+  const data = {
+    page: parseInt(page),
+    limit: parseInt(limit),
+    perfil_id: perfil_id ? parseInt(perfil_id) : undefined,
+    search: search ? String(search) : undefined,
+  };
+  const schema = z.object({
+    page: z.number().positive().optional(),
+    limit: z.number().positive().optional(),
+    perfil_id: z.number().positive().optional(),
+    search: z.string().optional(),
+  });
+
+  const schemaParsed = schema.safeParse(data);
+  if (!schemaParsed.success) {
+    console.log("erro schema", schemaParsed.error);
+    throw new ValidationError();
+  }
+  const users = await user.findAll(schemaParsed.data);
+
+  res.status(200).json(users);
+});
 export default router.handler({
   onNoMatch: controller.onNoMatchHandler,
   onError: controller.onErrorHandler,

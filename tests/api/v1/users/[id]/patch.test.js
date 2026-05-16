@@ -2,7 +2,7 @@ import password from "models/password";
 import orchestrator from "tests/orchestrator";
 import { version as uuidVersion } from "uuid";
 
-beforeAll(async () => {
+beforeEach(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
   await orchestrator.seedDatabase();
@@ -65,7 +65,7 @@ describe("PATCH /api/v1/users/[id]", () => {
       );
       const user = await orchestrator.createUser({
         nome: "EmailDuplicado",
-        email: "test-2@gmail.com",
+        email: "test-1@gmail.com",
       });
 
       const response2 = await fetch(

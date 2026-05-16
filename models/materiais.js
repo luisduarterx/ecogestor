@@ -118,8 +118,15 @@ const findById = async (id) => {
 
   return material;
 };
-const findAll = async () => {
+const findAll = async (filtros) => {
+  const { nome, categoria_id } = filtros;
   const materiais = await prisma.material.findMany({
+    where: {
+      nome: {
+        contains: nome ? nome.toUpperCase() : undefined,
+      },
+      categoria_id: categoria_id ? Number(categoria_id) : undefined,
+    },
     include: {
       categoria: {
         select: {

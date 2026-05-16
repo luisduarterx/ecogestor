@@ -7,15 +7,15 @@ beforeEach(async () => {
   await orchestrator.waitForAllServices();
 });
 
-describe("GET /api/v1/materiais", () => {
+describe("GET /api/v1/categorias", () => {
   describe("Usuario autenticado", () => {
-    test("Sem materiais cadastrados", async () => {
+    test("Sem categorias cadastradas", async () => {
       const user = await orchestrator.createUser({
         nome: "ADMINISTRADOR",
       });
       const session = await orchestrator.createSession(user.id);
 
-      const response = await fetch("http://localhost:3000/api/v1/materiais", {
+      const response = await fetch("http://localhost:3000/api/v1/categorias", {
         method: "GET",
         headers: {
           "Content-type": "application/json",
@@ -30,7 +30,7 @@ describe("GET /api/v1/materiais", () => {
 
       expect(response.status).toBe(200);
     });
-    test("Com materiais cadastrados", async () => {
+    test("Com categorias cadastradas", async () => {
       const user = await orchestrator.createUser({
         nome: "ADMINISTRADOR",
       });
@@ -43,18 +43,7 @@ describe("GET /api/v1/materiais", () => {
         nome: "CATEGORIA 02",
       });
 
-      const material1 = await orchestrator.createMaterial({
-        nome: "MATERIAL 01",
-        preco_venda: 20,
-        categoria_id: categoria1.id,
-      });
-      const material2 = await orchestrator.createMaterial({
-        nome: "MATERIAL 02",
-        preco_venda: 30,
-        categoria_id: categoria2.id,
-      });
-
-      const response = await fetch("http://localhost:3000/api/v1/materiais", {
+      const response = await fetch("http://localhost:3000/api/v1/categorias", {
         method: "GET",
         headers: {
           "Content-type": "application/json",
@@ -68,28 +57,18 @@ describe("GET /api/v1/materiais", () => {
       expect(responseBody).toHaveLength(2);
 
       expect(responseBody[0]).toEqual({
-        id: material1.id,
-        nome: "MATERIAL 01",
-        categoria_id: categoria1.id,
-        preco_venda: "20",
-        categoria: {
-          id: categoria1.id,
-          nome: "CATEGORIA 01",
-        },
+        id: categoria1.id,
+        nome: "CATEGORIA 01",
+        criado_em: responseBody[0].criado_em,
+        atualizado_em: responseBody[0].atualizado_em,
+        status: true,
         criado_em: responseBody[0].criado_em,
         atualizado_em: responseBody[0].atualizado_em,
         status: true,
       });
-
       expect(responseBody[1]).toEqual({
-        id: material2.id,
-        nome: "MATERIAL 02",
-        categoria_id: categoria2.id,
-        preco_venda: "30",
-        categoria: {
-          id: categoria2.id,
-          nome: "CATEGORIA 02",
-        },
+        id: categoria2.id,
+        nome: "CATEGORIA 02",
         criado_em: responseBody[1].criado_em,
         atualizado_em: responseBody[1].atualizado_em,
         status: true,
@@ -115,19 +94,8 @@ describe("GET /api/v1/materiais", () => {
         nome: "CATEGORIA 04",
       });
 
-      const material1 = await orchestrator.createMaterial({
-        nome: "MATERIAL 03",
-        preco_venda: 20,
-        categoria_id: categoria1.id,
-      });
-      const material2 = await orchestrator.createMaterial({
-        nome: "MATERIAL 04",
-        preco_venda: 30,
-        categoria_id: categoria2.id,
-      });
-
       const response = await fetch(
-        "http://localhost:3000/api/v1/materiais?nome=MATERIAL 03",
+        "http://localhost:3000/api/v1/categorias?nome=CATEGORIA 03",
         {
           method: "GET",
           headers: {
@@ -143,14 +111,8 @@ describe("GET /api/v1/materiais", () => {
       expect(responseBody).toHaveLength(1);
 
       expect(responseBody[0]).toEqual({
-        id: material1.id,
-        nome: "MATERIAL 03",
-        categoria_id: categoria1.id,
-        preco_venda: "20",
-        categoria: {
-          id: categoria1.id,
-          nome: "CATEGORIA 03",
-        },
+        id: categoria1.id,
+        nome: "CATEGORIA 03",
         criado_em: responseBody[0].criado_em,
         atualizado_em: responseBody[0].atualizado_em,
         status: true,
@@ -161,7 +123,7 @@ describe("GET /api/v1/materiais", () => {
 
       expect(response.status).toBe(200);
     });
-    test("Busca por categoria", async () => {
+    test("Busca por LETRA", async () => {
       const user = await orchestrator.createUser({
         nome: "ADMINISTRADOR",
       });
@@ -174,24 +136,8 @@ describe("GET /api/v1/materiais", () => {
         nome: "CATEGORIA 6",
       });
 
-      const material1 = await orchestrator.createMaterial({
-        nome: "MATERIAL 05",
-        preco_venda: 20,
-        categoria_id: categoria1.id,
-      });
-      const material2 = await orchestrator.createMaterial({
-        nome: "MATERIAL 06",
-        preco_venda: 30,
-        categoria_id: categoria2.id,
-      });
-      const material3 = await orchestrator.createMaterial({
-        nome: "MATERIAL 07",
-        preco_venda: 25,
-        categoria_id: categoria2.id,
-      });
-
       const response = await fetch(
-        `http://localhost:3000/api/v1/materiais?categoria_id=${categoria2.id}`,
+        `http://localhost:3000/api/v1/categorias?nome=cat`,
         {
           method: "GET",
           headers: {
@@ -206,61 +152,32 @@ describe("GET /api/v1/materiais", () => {
       expect(Array.isArray(responseBody)).toBe(true);
       expect(responseBody).toHaveLength(2);
 
-      expect(responseBody[0]).toEqual({
-        id: material2.id,
-        nome: "MATERIAL 06",
-        categoria_id: categoria2.id,
-        preco_venda: "30",
-        categoria: {
-          id: categoria2.id,
-          nome: "CATEGORIA 6",
-        },
-        criado_em: responseBody[0].criado_em,
-        atualizado_em: responseBody[0].atualizado_em,
-        status: true,
-      });
-
       expect(Date.parse(responseBody[0].criado_em)).not.toBeNaN();
       expect(Date.parse(responseBody[0].atualizado_em)).not.toBeNaN();
-
+      expect(responseBody[0].nome).toEqual("CATEGORIA 5");
+      expect(responseBody[1].nome).toEqual("CATEGORIA 6");
       expect(response.status).toBe(200);
     });
-    test("Busca por categoria e nome", async () => {
+    test("Busca por categoria e ordenacao", async () => {
       const user = await orchestrator.createUser({
         nome: "ADMINISTRADOR",
       });
       const session = await orchestrator.createSession(user.id);
-
       const categoria1 = await orchestrator.createCategoria({
-        nome: "CATEGORIA 7",
+        nome: "CATEGORIA 1",
       });
       const categoria2 = await orchestrator.createCategoria({
-        nome: "CATEGORIA 8",
+        nome: "CATEGORIA 2",
       });
-
-      const material1 = await orchestrator.createMaterial({
-        nome: "MATERIAL 08",
-        preco_venda: 20,
-        categoria_id: categoria1.id,
+      const categoria3 = await orchestrator.createCategoria({
+        nome: "CATEGORIA 3",
       });
-      const material2 = await orchestrator.createMaterial({
-        nome: "MATERIAL 09",
-        preco_venda: 30,
-        categoria_id: categoria1.id,
-      });
-      const material3 = await orchestrator.createMaterial({
-        nome: "Aluminio",
-        preco_venda: 25,
-        categoria_id: categoria2.id,
-      });
-      const material4 = await orchestrator.createMaterial({
-        nome: "Ferro",
-        preco_venda: 25,
-        categoria_id: categoria2.id,
+      const categoria4 = await orchestrator.createCategoria({
+        nome: "CATEGORIA 4",
       });
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/materiais?categoria_id=${categoria2.id}&nome=A`,
+        `http://localhost:3000/api/v1/categorias?nome=CATEGORIA&ordem=asc`,
         {
           method: "GET",
           headers: {
@@ -273,19 +190,20 @@ describe("GET /api/v1/materiais", () => {
       const responseBody = await response.json();
 
       expect(Array.isArray(responseBody)).toBe(true);
-      expect(responseBody).toHaveLength(1);
+      expect(responseBody).toHaveLength(4);
 
       expect(responseBody[0]).toEqual({
-        id: material3.id,
-        nome: "ALUMINIO",
-        categoria_id: categoria2.id,
-        preco_venda: "25",
-        categoria: {
-          id: categoria2.id,
-          nome: "CATEGORIA 8",
-        },
+        id: responseBody[0].id,
+        nome: "CATEGORIA 1",
         criado_em: responseBody[0].criado_em,
         atualizado_em: responseBody[0].atualizado_em,
+        status: true,
+      });
+      expect(responseBody[3]).toEqual({
+        id: responseBody[3].id,
+        nome: "CATEGORIA 4",
+        criado_em: responseBody[3].criado_em,
+        atualizado_em: responseBody[3].atualizado_em,
         status: true,
       });
 
@@ -304,7 +222,7 @@ describe("GET /api/v1/materiais", () => {
       });
       const session = await orchestrator.createSession(user.id);
 
-      const response = await fetch("http://localhost:3000/api/v1/materiais", {
+      const response = await fetch("http://localhost:3000/api/v1/categorias", {
         method: "GET",
         headers: {
           "Content-type": "application/json",
@@ -327,7 +245,7 @@ describe("GET /api/v1/materiais", () => {
 
   describe("Usuario não autenticado", () => {
     test("Tentativa de acesso", async () => {
-      const response = await fetch("http://localhost:3000/api/v1/materiais", {
+      const response = await fetch("http://localhost:3000/api/v1/categorias", {
         method: "GET",
         headers: {
           "Content-type": "application/json",

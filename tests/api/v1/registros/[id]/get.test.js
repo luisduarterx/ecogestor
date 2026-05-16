@@ -1,6 +1,5 @@
 import { tipo_registro } from "@prisma/client";
 import orchestrator from "tests/orchestrator";
-import { version as uuidVersion } from "uuid";
 
 beforeEach(async () => {
   await orchestrator.clearDatabase();
@@ -9,28 +8,29 @@ beforeEach(async () => {
   await orchestrator.waitForAllServices();
 });
 
-describe("PUT /api/v1/categorias", () => {
+describe("GET /api/v1/registros", () => {
   describe("Usuario autenticado", () => {
-    test("Com dados obrigatórios válidos", async () => {
+    test("Busca registro valido", async () => {
       const user = await orchestrator.createUser({
         nome: "ADMINISTRADOR",
       });
       const session = await orchestrator.createSession(user.id);
-      const categoria = await orchestrator.createCategoria({
-        nome: "Cat Teste 1",
+
+      const registro1 = await orchestrator.createRegistro({
+        nome: "Maria Alzira",
+        tipo_registro: "F",
+        cpf: "22233344455",
+        email: "email@exemplo.com",
       });
+
       const response = await fetch(
-        `http://localhost:3000/api/v1/categorias/${categoria.id}`,
+        `http://localhost:3000/api/v1/registros/${registro1.id}`,
         {
-          method: "PUT",
+          method: "GET",
           headers: {
             "Content-type": "application/json",
             Cookie: `sid=${session.token}`,
           },
-          body: JSON.stringify({
-            nome: "Nome atualizado",
-            status: false,
-          }),
         },
       );
 
@@ -38,103 +38,88 @@ describe("PUT /api/v1/categorias", () => {
 
       expect(responseBody).toEqual({
         id: responseBody.id,
-        nome: "NOME ATUALIZADO",
+        nome: "Maria Alzira",
+        cpf: "22233344455",
+        email: "email@exemplo.com",
+        tipo_registro: "F",
+        status: true,
+        data_nascimento: responseBody.data_nascimento,
+        whatsapp: responseBody.whatsapp,
+        cnpj: null,
+        ie: null,
+        tabela_id: 1,
+        cep: responseBody.cep,
+        logradouro: responseBody.logradouro,
+        numero: responseBody.numero,
+        complemento: responseBody.complemento,
+        bairro: responseBody.bairro,
+        cidade: responseBody.cidade,
+        estado: responseBody.estado,
         criado_em: responseBody.criado_em,
         atualizado_em: responseBody.atualizado_em,
-        status: false,
       });
-      expect(responseBody.atualizado_em > responseBody.criado_em).toBe(true);
       expect(Date.parse(responseBody.criado_em)).not.toBeNaN();
       expect(Date.parse(responseBody.atualizado_em)).not.toBeNaN();
 
       expect(response.status).toBe(200);
     });
-    test("Com categoria já existente", async () => {
+    test("Busca registro invalido", async () => {
       const user = await orchestrator.createUser({
         nome: "ADMINISTRADOR",
       });
       const session = await orchestrator.createSession(user.id);
-      const categoria2 = await orchestrator.createCategoria({
-        nome: "nome existente",
-      });
 
-      const categoria = await orchestrator.createCategoria({
-        nome: "Cat Teste 2",
+      const registro1 = await orchestrator.createRegistro({
+        nome: "Maria Alzira",
+        tipo_registro: "F",
+        cpf: "22233344455",
+        email: "email@exemplo.com",
       });
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/categorias/${categoria.id}`,
+        `http://localhost:3000/api/v1/registros/9999`,
         {
-          method: "PUT",
+          method: "GET",
           headers: {
             "Content-type": "application/json",
             Cookie: `sid=${session.token}`,
           },
-          body: JSON.stringify({
-            nome: "nome existente",
-          }),
         },
       );
 
       const responseBody = await response.json();
 
       expect(responseBody).toEqual({
-        message: "Essa categoria já existe.",
-        name: "ValidationError",
-        status_code: 400,
-        action: "Verifique os dados enviados e tente novamente.",
-      });
-
-      expect(response.status).toBe(400);
-    });
-    test("Com categoria inexistente", async () => {
-      const user = await orchestrator.createUser({
-        nome: "ADMINISTRADOR",
-      });
-      const session = await orchestrator.createSession(user.id);
-      const response = await fetch(
-        `http://localhost:3000/api/v1/categorias/99999`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-type": "application/json",
-            Cookie: `sid=${session.token}`,
-          },
-          body: JSON.stringify({
-            nome: "ABCDEF",
-          }),
-        },
-      );
-
-      const responseBody = await response.json();
-
-      expect(responseBody).toEqual({
-        message: "Não foi possível encontrar a categoria com o id informado.",
+        message: "Registro não encontrado.",
         name: "NotFoundError",
         status_code: 404,
-        action: "Verifique os dados enviados e tente novamente.",
+        action:
+          "O registro que você está tentando acessar não existe ou foi removido.",
       });
 
       expect(response.status).toBe(404);
     });
-    test("Sem body dentro da request", async () => {
+    test("Busca registro com parametro invalido", async () => {
       const user = await orchestrator.createUser({
         nome: "ADMINISTRADOR",
       });
-
       const session = await orchestrator.createSession(user.id);
-      const categoria = await orchestrator.createCategoria({
-        nome: "Cat Teste 3",
+
+      const registro1 = await orchestrator.createRegistro({
+        nome: "Maria Alzira",
+        tipo_registro: "F",
+        cpf: "22233344455",
+        email: "email@exemplo.com",
       });
+
       const response = await fetch(
-        `http://localhost:3000/api/v1/categorias/${categoria.id}`,
+        `http://localhost:3000/api/v1/registros/wewe12cdsa@`,
         {
-          method: "PUT",
+          method: "GET",
           headers: {
             "Content-type": "application/json",
             Cookie: `sid=${session.token}`,
           },
-          body: JSON.stringify({}),
         },
       );
 
@@ -152,23 +137,21 @@ describe("PUT /api/v1/categorias", () => {
   });
 
   describe("Usuario autenticado, sem permissao", () => {
-    test("Com dados obrigatórios válidos", async () => {
+    test("Tentativa de acesso", async () => {
       const user = await orchestrator.createUser({
         nome: "ADMINISTRADOR",
         perfil_id: 2,
       });
       const session = await orchestrator.createSession(user.id);
+
       const response = await fetch(
-        "http://localhost:3000/api/v1/categorias/99999",
+        "http://localhost:3000/api/v1/registros/999",
         {
-          method: "PUT",
+          method: "GET",
           headers: {
             "Content-type": "application/json",
             Cookie: `sid=${session.token}`,
           },
-          body: JSON.stringify({
-            nome: "Plasticos",
-          }),
         },
       );
 
@@ -184,18 +167,16 @@ describe("PUT /api/v1/categorias", () => {
       expect(response.status).toBe(401);
     });
   });
+
   describe("Usuario não autenticado", () => {
-    test("Com dados obrigatórios válidos", async () => {
+    test("Tentativa de acesso", async () => {
       const response = await fetch(
-        "http://localhost:3000/api/v1/categorias/98999999",
+        "http://localhost:3000/api/v1/registros/999",
         {
-          method: "PUT",
+          method: "GET",
           headers: {
             "Content-type": "application/json",
           },
-          body: JSON.stringify({
-            nome: "Aluminios",
-          }),
         },
       );
 

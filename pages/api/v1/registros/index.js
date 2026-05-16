@@ -48,6 +48,31 @@ router.post(authorization.canAccess("create:registro"), async (req, res) => {
 
   res.status(201).json(newRecord);
 });
+router.get(authorization.canAccess("read:registro"), async (req, res) => {
+  const { page, limit, search, tipo, status } = req.query;
+  console.log("status desse", status);
+  const pageNumber = parseInt(page);
+  const limitNumber = parseInt(limit);
+
+  if (
+    isNaN(pageNumber) ||
+    isNaN(limitNumber) ||
+    pageNumber < 1 ||
+    limitNumber < 1
+  ) {
+    throw new ValidationError("Parâmetros de paginação inválidos.");
+  }
+
+  const registros = await registro.findAll({
+    page,
+    limit,
+    search,
+    tipo,
+    status,
+  });
+
+  res.status(200).json(registros);
+});
 
 export default router.handler({
   onNoMatch: controller.onNoMatchHandler,

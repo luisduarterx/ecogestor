@@ -1,5 +1,6 @@
+import { tipo_registro } from "@prisma/client";
 import { prisma } from "infra/database";
-import { ValidationError } from "infra/errors";
+import { ValidationError, NotFoundError } from "infra/errors";
 
 const create = async (data) => {
   const existingRegistro = await prisma.registros.findFirst({
@@ -42,6 +43,7 @@ const create = async (data) => {
       bairro: data.bairro,
       cidade: data.cidade,
       estado: data.estado,
+      status: data.status ?? true,
     },
   });
 
@@ -104,10 +106,71 @@ const update = async (data, id) => {
   });
   return updatedRegistro;
 };
+const findAll = async (filtros) => {
+  try {
+    //futuramente mudar o where para fora da chamada ao banco
+    const offset = (filtros.page - 1) * filtros.limit;
+
+    filtros.status = filtros.status == "false" ? false : true;
+    const registros = await prisma.registros.findMany({
+      where: {
+        status: filtros.status,
+
+        ...(filtros.tipo && {
+          tipo_registro: filtros.tipo,
+        }),
+        ...(filtros.search && {
+          OR: [
+            {
+              nome: {
+                contains: filtros.search,
+                mode: "insensitive",
+              },
+            },
+            {
+              cpf: {
+                contains: filtros.search,
+              },
+            },
+            {
+              cnpj: {
+                contains: filtros.search,
+              },
+            },
+          ],
+        }),
+      },
+
+      skip: offset,
+      take: Number(filtros.limit),
+    });
+
+    return registros;
+  } catch (error) {
+    console.log("O ERRO FOI ESSE", error);
+    throw error;
+  }
+};
+const findById = async (id) => {
+  const registroFound = await prisma.registros.findUnique({
+    where: {
+      id: id,
+    },
+  });
+  if (!registroFound) {
+    throw new NotFoundError(
+      "Registro não encontrado.",
+      "O registro que você está tentando acessar não existe ou foi removido.",
+    );
+  }
+  return registroFound;
+};
 
 const registro = {
   create,
   update,
+  findAll,
+  findById,
 };
 
 export default registro;

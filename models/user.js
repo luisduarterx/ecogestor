@@ -42,6 +42,15 @@ const findUserByID = async (id) => {
     where: {
       id,
     },
+    select: {
+      id: true,
+      nome: true,
+      email: true,
+      perfil_id: true,
+      perfil: { select: { nome: true } },
+      criado_em: true,
+      atualizado_em: true,
+    },
   });
 
   if (!result) {
@@ -84,11 +93,63 @@ const update = async (id, userInputValues) => {
 
   return newUser;
 };
+const findAll = async (filtros) => {
+  try {
+    //futuramente mudar o where para fora da chamada ao banco
+    const offset = (filtros.page - 1) * filtros.limit;
+
+    const users = await prisma.users.findMany({
+      where: {
+        ...(filtros.perfil_id && {
+          perfil_id: filtros.perfil_id,
+        }),
+        ...(filtros.search && {
+          OR: [
+            {
+              nome: {
+                contains: filtros.search,
+                mode: "insensitive",
+              },
+            },
+            {
+              email: {
+                contains: filtros.search,
+                mode: "insensitive",
+              },
+            },
+          ],
+        }),
+      },
+      select: {
+        id: true,
+        nome: true,
+        email: true,
+        perfil_id: true,
+        perfil: {
+          select: {
+            nome: true,
+          },
+        },
+        criado_em: true,
+        atualizado_em: true,
+      },
+
+      skip: offset,
+      take: Number(filtros.limit),
+    });
+    console.log("usuarios:", users);
+    return users;
+  } catch (error) {
+    console.log("ESSE FOI O ERRO");
+    throw error;
+  }
+};
 const user = {
   create,
   findUserByID,
   update,
   findUserByEmail,
+  findAll,
 };
 
 export default user;
