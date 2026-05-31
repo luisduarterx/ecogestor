@@ -178,6 +178,7 @@ async function createConta(contaInputArguments) {
   return await contas.create({
     nome: contaInputArguments.nome,
     saldo_inicial: contaInputArguments.saldo_inicial,
+    status: contaInputArguments.status ?? true,
   });
 }
 const orchestrator = {
