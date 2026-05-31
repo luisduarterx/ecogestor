@@ -147,6 +147,7 @@ model conta_financeira{
   nome String @unique
   criado_em DateTime @default(now())
   atualizado_em DateTime @updatedAt
+  conta_padrao Boolean @default(false)
   saldo_atual Decimal @db.Decimal(10,2)
   saldo_inicial Decimal @db.Decimal(10,2)
   status Boolean @default(true)

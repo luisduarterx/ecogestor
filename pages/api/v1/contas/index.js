@@ -20,6 +20,7 @@ router.post(authorization.canAccess("create:contas"), async (req, res) => {
         invalid_type_error: "O saldo inicial deve ser um número.",
       })
       .positive("O saldo inicial deve ser um número positivo."),
+    conta_padrao: z.boolean().optional(),
   });
 
   const dataParsed = schema.safeParse(req.body);
@@ -28,9 +29,9 @@ router.post(authorization.canAccess("create:contas"), async (req, res) => {
     throw new ValidationError();
   }
 
-  const { nome, saldo_inicial } = dataParsed.data;
+  const { nome, saldo_inicial, conta_padrao } = dataParsed.data;
 
-  const conta = await contas.create({ nome, saldo_inicial });
+  const conta = await contas.create({ nome, saldo_inicial, conta_padrao });
 
   res.status(201).json(conta);
 });

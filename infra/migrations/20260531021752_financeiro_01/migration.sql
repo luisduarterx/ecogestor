@@ -43,9 +43,11 @@ CREATE TABLE "conta_financeira" (
     "nome" TEXT NOT NULL UNIQUE,
     "criado_em" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "atualizado_em" TIMESTAMP(3) NOT NULL,
+    "conta_padrao" BOOLEAN NOT NULL DEFAULT false,
     "saldo_atual" DECIMAL(10,2) NOT NULL,
     "saldo_inicial" DECIMAL(10,2) NOT NULL,
     "status" BOOLEAN NOT NULL DEFAULT true,
+    
 
     CONSTRAINT "conta_financeira_pkey" PRIMARY KEY ("id")
 );

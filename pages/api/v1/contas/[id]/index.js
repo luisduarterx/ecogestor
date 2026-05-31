@@ -24,7 +24,7 @@ router.patch(authorization.canAccess("update:contas"), async (req, res) => {
   if (!idParsed.success) {
     throw new ValidationError();
   }
-  const { nome, status } = req.body;
+  const { nome, status, conta_padrao } = req.body;
 
   const dataParsed = z
     .object({
@@ -35,8 +35,9 @@ router.patch(authorization.canAccess("update:contas"), async (req, res) => {
         .toUpperCase()
         .optional(),
       status: z.boolean().optional(),
+      conta_padrao: z.boolean().optional(),
     })
-    .safeParse({ nome, status });
+    .safeParse({ nome, status, conta_padrao });
 
   if (!dataParsed.success) {
     throw new ValidationError();
@@ -46,6 +47,7 @@ router.patch(authorization.canAccess("update:contas"), async (req, res) => {
     id: idParsed.data,
     nome: dataParsed.data.nome,
     status: dataParsed.data.status,
+    conta_padrao: dataParsed.data.conta_padrao,
   });
 
   res.status(200).json(conta);

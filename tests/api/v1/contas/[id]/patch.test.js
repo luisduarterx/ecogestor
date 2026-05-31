@@ -41,6 +41,7 @@ describe("PATCH /api/v1/contas/[id]", () => {
         nome: "CONTA NOVA",
         saldo_inicial: 1000,
         saldo_atual: 1000,
+        conta_padrao: false,
         criado_em: responseBody.criado_em,
         atualizado_em: responseBody.atualizado_em,
         status: false,
@@ -51,6 +52,7 @@ describe("PATCH /api/v1/contas/[id]", () => {
 
       expect(response.status).toBe(200);
     });
+
     test("Altera apenas status", async () => {
       const user = await orchestrator.createUser({
         nome: "ADMINISTRADOR",
@@ -80,6 +82,7 @@ describe("PATCH /api/v1/contas/[id]", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         nome: "CONTA 01",
+        conta_padrao: false,
         saldo_inicial: 1000,
         saldo_atual: 1000,
         criado_em: responseBody.criado_em,
@@ -91,6 +94,48 @@ describe("PATCH /api/v1/contas/[id]", () => {
       expect(Date.parse(responseBody.atualizado_em)).not.toBeNaN();
 
       expect(response.status).toBe(200);
+    });
+    test("Tenta duplicar uma conta padrão", async () => {
+      const user = await orchestrator.createUser({
+        nome: "ADMINISTRADOR",
+      });
+      const session = await orchestrator.createSession(user.id);
+
+      await orchestrator.createConta({
+        nome: "CONTA 03",
+        saldo_inicial: 1000,
+        conta_padrao: true,
+      });
+      const conta = await orchestrator.createConta({
+        nome: "CONTA 02",
+        saldo_inicial: 1000,
+      });
+
+      const response = await fetch(
+        `http://localhost:3000/api/v1/contas/${conta.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-type": "application/json",
+            Cookie: `sid=${session.token}`,
+          },
+          body: JSON.stringify({
+            conta_padrao: true,
+          }),
+        },
+      );
+
+      const responseBody = await response.json();
+
+      expect(responseBody).toEqual({
+        message:
+          "Já existe uma conta padrão. Só é permitido uma conta padrão ativada.",
+        name: "ValidationError",
+        status_code: 400,
+        action: "Verifique os dados enviados e tente novamente.",
+      });
+
+      expect(response.status).toBe(400);
     });
     test("Com nome duplicado", async () => {
       const user = await orchestrator.createUser({

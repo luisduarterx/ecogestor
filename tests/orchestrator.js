@@ -185,6 +185,7 @@ async function createConta(contaInputArguments) {
     nome: contaInputArguments.nome,
     saldo_inicial: contaInputArguments.saldo_inicial,
     status: contaInputArguments.status ?? true,
+    conta_padrao: contaInputArguments.conta_padrao ?? false,
   });
 }
 async function createCategoriaLancamento(categoriaLancamentoInputArguments) {

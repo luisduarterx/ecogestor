@@ -34,6 +34,7 @@ describe("POST /api/v1/contas", () => {
         nome: "DINHEIRO",
         saldo_inicial: 1000,
         saldo_atual: 1000,
+        conta_padrao: false,
         status: true,
         criado_em: responseBody.criado_em,
         atualizado_em: responseBody.atualizado_em,
@@ -43,6 +44,41 @@ describe("POST /api/v1/contas", () => {
       expect(Date.parse(responseBody.atualizado_em)).not.toBeNaN();
 
       expect(response.status).toBe(201);
+    });
+    test("Com uma conta padrao já existente", async () => {
+      const user = await orchestrator.createUser({
+        nome: "ADMINISTRADOR",
+      });
+      const session = await orchestrator.createSession(user.id);
+      const contaPadrao = await orchestrator.createConta({
+        nome: "CONTA PADRAO",
+        saldo_inicial: 1000,
+        conta_padrao: true,
+      });
+      const response = await fetch("http://localhost:3000/api/v1/contas", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+          Cookie: `sid=${session.token}`,
+        },
+        body: JSON.stringify({
+          nome: "DINHEIRO",
+          saldo_inicial: 1000,
+          conta_padrao: true,
+        }),
+      });
+
+      const responseBody = await response.json();
+
+      expect(responseBody).toEqual({
+        message:
+          "Já existe uma conta padrão. Só é permitido uma conta padrão ativada.",
+        name: "ValidationError",
+        status_code: 400,
+        action: "Verifique os dados enviados e tente novamente.",
+      });
+
+      expect(response.status).toBe(400);
     });
     test("Com nome duplicado", async () => {
       const user = await orchestrator.createUser({

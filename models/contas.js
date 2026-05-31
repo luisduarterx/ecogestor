@@ -1,14 +1,27 @@
 import { prisma } from "infra/database";
 import { NotFoundError, ValidationError } from "infra/errors";
 
-const create = async ({ nome, saldo_inicial, status }) => {
+const create = async ({ nome, saldo_inicial, status, conta_padrao }) => {
   try {
+    if (conta_padrao) {
+      const contaPadraoAtiva = await prisma.conta_financeira.findFirst({
+        where: {
+          conta_padrao: true,
+        },
+      });
+      if (contaPadraoAtiva) {
+        throw new ValidationError(
+          "Já existe uma conta padrão. Só é permitido uma conta padrão ativada.",
+        );
+      }
+    }
     const conta = await prisma.conta_financeira.create({
       data: {
         nome: nome.toUpperCase(),
         saldo_inicial,
         status: status ?? true,
         saldo_atual: saldo_inicial,
+        conta_padrao: conta_padrao ?? false,
       },
     });
 
@@ -18,6 +31,7 @@ const create = async ({ nome, saldo_inicial, status }) => {
       saldo_inicial: Number(conta.saldo_inicial),
       saldo_atual: Number(conta.saldo_atual),
       status: conta.status,
+      conta_padrao: conta.conta_padrao,
       criado_em: conta.criado_em.toISOString(),
       atualizado_em: conta.atualizado_em.toISOString(),
     };
@@ -75,8 +89,24 @@ const findById = async (id) => {
     atualizado_em: conta.atualizado_em.toISOString(),
   };
 };
-const update = async ({ id, nome, status }) => {
+const update = async ({ id, nome, status, conta_padrao }) => {
   try {
+    if (conta_padrao === true) {
+      const contaPadraoAtiva = await prisma.conta_financeira.findFirst({
+        where: {
+          conta_padrao: true,
+          id: {
+            not: id,
+          },
+        },
+      });
+      console.log("Conta padrão ativa encontrada:", contaPadraoAtiva);
+      if (contaPadraoAtiva) {
+        throw new ValidationError(
+          "Já existe uma conta padrão. Só é permitido uma conta padrão ativada.",
+        );
+      }
+    }
     const conta = await prisma.conta_financeira.update({
       where: {
         id,
@@ -84,12 +114,14 @@ const update = async ({ id, nome, status }) => {
       data: {
         nome: nome ? nome.toUpperCase() : undefined,
         status,
+        conta_padrao: conta_padrao !== undefined ? conta_padrao : undefined,
       },
     });
 
     return {
       id: conta.id,
       nome: conta.nome,
+      conta_padrao: conta.conta_padrao,
       saldo_inicial: Number(conta.saldo_inicial),
       saldo_atual: Number(conta.saldo_atual),
       status: conta.status,
