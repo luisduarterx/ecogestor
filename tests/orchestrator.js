@@ -10,6 +10,7 @@ import categoria from "models/categorias";
 import material from "models/materiais";
 import tabela from "models/tabelas";
 import contas from "models/contas";
+import categoriaLancamento from "models/categorias-lancamento";
 
 async function waitForAllServices() {
   await waitForWebServer();
@@ -30,6 +31,7 @@ async function waitForAllServices() {
   }
 }
 async function clearDatabase() {
+  await prisma.categoria_lancamento.deleteMany();
   await prisma.conta_financeira.deleteMany();
   await prisma.sessions.deleteMany();
 
@@ -74,6 +76,10 @@ async function seedDatabase() {
     "read:contas",
     "update:contas",
     "delete:contas",
+    "create:categorias-lancamento",
+    "read:categorias-lancamento",
+    "update:categorias-lancamento",
+    "delete:categorias-lancamento",
   ];
   await prisma.perfis.upsert({
     where: {
@@ -181,6 +187,12 @@ async function createConta(contaInputArguments) {
     status: contaInputArguments.status ?? true,
   });
 }
+async function createCategoriaLancamento(categoriaLancamentoInputArguments) {
+  return await categoriaLancamento.create({
+    nome: categoriaLancamentoInputArguments.nome,
+    tipo_categoria: categoriaLancamentoInputArguments.tipo_categoria,
+  });
+}
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
@@ -194,6 +206,7 @@ const orchestrator = {
   createMaterial,
   createTabela,
   createConta,
+  createCategoriaLancamento,
 };
 
 export default orchestrator;
