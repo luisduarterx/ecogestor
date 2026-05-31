@@ -9,6 +9,7 @@ import registro from "models/registros";
 import categoria from "models/categorias";
 import material from "models/materiais";
 import tabela from "models/tabelas";
+import contas from "models/contas";
 
 async function waitForAllServices() {
   await waitForWebServer();
@@ -29,6 +30,7 @@ async function waitForAllServices() {
   }
 }
 async function clearDatabase() {
+  await prisma.conta_financeira.deleteMany();
   await prisma.sessions.deleteMany();
 
   await prisma.users.deleteMany();
@@ -68,6 +70,10 @@ async function seedDatabase() {
     "read:users",
     "update:users",
     "delete:users",
+    "create:contas",
+    "read:contas",
+    "update:contas",
+    "delete:contas",
   ];
   await prisma.perfis.upsert({
     where: {
@@ -168,6 +174,12 @@ async function createSessionExpired(userId) {
 
   return sessionExpired;
 }
+async function createConta(contaInputArguments) {
+  return await contas.create({
+    nome: contaInputArguments.nome,
+    saldo_inicial: contaInputArguments.saldo_inicial,
+  });
+}
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
@@ -180,6 +192,7 @@ const orchestrator = {
   createCategoria,
   createMaterial,
   createTabela,
+  createConta,
 };
 
 export default orchestrator;
