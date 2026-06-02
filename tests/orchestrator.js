@@ -11,6 +11,7 @@ import material from "models/materiais";
 import tabela from "models/tabelas";
 import contas from "models/contas";
 import categoriaLancamento from "models/categorias-lancamento";
+import caixa from "models/caixa";
 
 async function waitForAllServices() {
   await waitForWebServer();
@@ -31,8 +32,11 @@ async function waitForAllServices() {
   }
 }
 async function clearDatabase() {
+  await prisma.movimentacoes_financeiras.deleteMany();
+  await prisma.caixa.deleteMany();
   await prisma.categoria_lancamento.deleteMany();
   await prisma.conta_financeira.deleteMany();
+
   await prisma.sessions.deleteMany();
 
   await prisma.users.deleteMany();
@@ -80,6 +84,9 @@ async function seedDatabase() {
     "read:categorias-lancamento",
     "update:categorias-lancamento",
     "delete:categorias-lancamento",
+    "abrir:caixa",
+    "fechar:caixa",
+    "consultar:caixa",
   ];
   await prisma.perfis.upsert({
     where: {
@@ -194,6 +201,18 @@ async function createCategoriaLancamento(categoriaLancamentoInputArguments) {
     tipo_categoria: categoriaLancamentoInputArguments.tipo_categoria,
   });
 }
+async function createCaixa(caixaInputArguments) {
+  const user = await createUser({
+    nome: "USUÁRIO CAIXA",
+  });
+  await createSession(user.id);
+  return await caixa.abrir({
+    user_id: caixaInputArguments.user_id ?? user.id,
+    entrada: caixaInputArguments.entrada,
+    status: caixaInputArguments.status || "ABERTO",
+    observacao_abertura: caixaInputArguments.observacao_abertura,
+  });
+}
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
@@ -208,6 +227,7 @@ const orchestrator = {
   createTabela,
   createConta,
   createCategoriaLancamento,
+  createCaixa,
 };
 
 export default orchestrator;
