@@ -89,7 +89,7 @@ CREATE TABLE "movimentacoes_financeiras" (
     "id" SERIAL NOT NULL,
     "conta_id" INTEGER NOT NULL,
     "origem" "origem_movimentacao" NOT NULL,
-    "origem_id" INTEGER NOT NULL,
+    "origem_id" INTEGER ,
     "descricao" TEXT NOT NULL,
     "direcao" "direcao_financeira" NOT NULL,
     "valor" DECIMAL(10,2) NOT NULL,
@@ -100,7 +100,7 @@ CREATE TABLE "movimentacoes_financeiras" (
     "motivo_ajuste" TEXT,
     "estornada" BOOLEAN NOT NULL DEFAULT false,
     "estorno_de_id" INTEGER,
-    "caixa_id" INTEGER NOT NULL,
+    "caixa_id" INTEGER,
 
     CONSTRAINT "movimentacoes_financeiras_pkey" PRIMARY KEY ("id")
 );

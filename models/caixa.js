@@ -1,5 +1,6 @@
 import { ApplicationError, NotFoundError, ValidationError } from "infra/errors";
 import { prisma } from "infra/database";
+import movFinanceiras from "./mov-financeiras";
 
 const abrir = async ({ user_id, entrada, observacao_abertura, status }) => {
   const caixaAberto = await prisma.caixa.findFirst({
@@ -50,32 +51,7 @@ const abrir = async ({ user_id, entrada, observacao_abertura, status }) => {
         },
       },
     });
-    if (entrada) {
-      const movimentacaoEntrada = await trx.movimentacoes_financeiras.create({
-        data: {
-          conta_id: conta.id,
-          origem: "ABERTURA_CAIXA",
-          origem_id: caixa.id,
-          descricao: "Entrada de abertura de caixa",
-          direcao: "ENTRADA",
-          valor: entrada,
-          saldo: Number(conta.saldo_atual) + Number(entrada),
-          user_id,
-          caixa_id: caixa.id,
-        },
-      });
-      await trx.conta_financeira.update({
-        where: {
-          id: conta.id,
-        },
-        data: {
-          saldo_atual: {
-            increment: entrada,
-          },
-        },
-      });
-      caixa.movimentacoes.push(movimentacaoEntrada);
-    }
+
     return caixa;
   });
 

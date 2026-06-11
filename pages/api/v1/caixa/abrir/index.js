@@ -10,7 +10,6 @@ router.use(authorization.middleware);
 
 router.post(authorization.canAccess("abrir:caixa"), async (req, res) => {
   const schema = z.object({
-    entrada: z.number().positive().optional(),
     observacao_abertura: z.string().optional(),
   });
   const schemaParsed = schema.safeParse(req.body);
@@ -19,11 +18,11 @@ router.post(authorization.canAccess("abrir:caixa"), async (req, res) => {
     throw new ValidationError();
   }
 
-  const { entrada, observacao_abertura } = schemaParsed.data;
+  const { observacao_abertura } = schemaParsed.data;
 
   const novoCaixa = await caixa.abrir({
     user_id: req.user.id,
-    entrada,
+
     observacao_abertura,
   });
 

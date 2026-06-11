@@ -51,83 +51,39 @@ describe("POST /api/v1/caixa/abrir", () => {
 
       expect(response.status).toBe(201);
     });
-    test("Com dados obrigatórios válidos, com entrada ", async () => {
-      const user = await orchestrator.createUser({
-        nome: "ADMINISTRADOR",
-      });
-      const session = await orchestrator.createSession(user.id);
-      const conta = await orchestrator.createConta({
-        nome: "CONTA 01",
-        saldo_inicial: 1000,
-        conta_padrao: true,
-      });
-      const response = await fetch("http://localhost:3000/api/v1/caixa/abrir", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          Cookie: `sid=${session.token}`,
-        },
-        body: JSON.stringify({
-          entrada: 1000, // opcional, se não for enviado, não será criado uma movimentacao de entrada.
-          observacao_abertura:
-            "Caixa aberto com saldo atual  + entrada de 1000",
-        }),
-      });
+    //   const user = await orchestrator.createUser({
+    //     nome: "ADMINISTRADOR",
+    //   });
+    //   const session = await orchestrator.createSession(user.id);
+    //   const conta = await orchestrator.createConta({
+    //     nome: "CONTA 01",
+    //     saldo_inicial: 1000,
+    //     conta_padrao: true,
+    //   });
+    //   const response = await fetch("http://localhost:3000/api/v1/caixa/abrir", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-type": "application/json",
+    //       Cookie: `sid=${session.token}`,
+    //     },
+    //     body: JSON.stringify({
+    //       entrada: -1000, // opcional, se não for enviado, não será criado uma movimentacao de entrada.
+    //       observacao_abertura:
+    //         "Caixa aberto com saldo atual  + entrada de 1000",
+    //     }),
+    //   });
 
-      const responseBody = await response.json();
+    //   const responseBody = await response.json();
 
-      expect(responseBody).toEqual({
-        id: responseBody.id,
-        conta_id: conta.id,
-        status: "ABERTO",
-        usuario_abertura_id: user.id,
-        saldo_inicial: conta.saldo_inicial,
-        usuario_abertura: { id: user.id, nome: user.nome },
-        aberto_em: responseBody.aberto_em,
-        observacao_abertura: "Caixa aberto com saldo atual  + entrada de 1000",
-        movimentacoes: responseBody.movimentacoes,
-      });
-      expect(Array.isArray(responseBody.movimentacoes)).toBe(true);
-      expect(responseBody.movimentacoes.length).toBe(1);
+    //   expect(responseBody).toEqual({
+    //     message: "Um erro de validação ocorreu.",
+    //     name: "ValidationError",
+    //     status_code: 400,
+    //     action: "Verifique os dados enviados e tente novamente.",
+    //   });
 
-      expect(Date.parse(responseBody.aberto_em)).not.toBeNaN();
-
-      expect(response.status).toBe(201);
-    });
-    test("Com dados obrigatórios válidos, com entrada negativa ", async () => {
-      const user = await orchestrator.createUser({
-        nome: "ADMINISTRADOR",
-      });
-      const session = await orchestrator.createSession(user.id);
-      const conta = await orchestrator.createConta({
-        nome: "CONTA 01",
-        saldo_inicial: 1000,
-        conta_padrao: true,
-      });
-      const response = await fetch("http://localhost:3000/api/v1/caixa/abrir", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-          Cookie: `sid=${session.token}`,
-        },
-        body: JSON.stringify({
-          entrada: -1000, // opcional, se não for enviado, não será criado uma movimentacao de entrada.
-          observacao_abertura:
-            "Caixa aberto com saldo atual  + entrada de 1000",
-        }),
-      });
-
-      const responseBody = await response.json();
-
-      expect(responseBody).toEqual({
-        message: "Um erro de validação ocorreu.",
-        name: "ValidationError",
-        status_code: 400,
-        action: "Verifique os dados enviados e tente novamente.",
-      });
-
-      expect(response.status).toBe(400);
-    });
+    //   expect(response.status).toBe(400);
+    // });
     test("Com caixa já aberto", async () => {
       const user = await orchestrator.createUser({
         nome: "ADMINISTRADOR",

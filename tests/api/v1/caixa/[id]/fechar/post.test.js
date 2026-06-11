@@ -19,11 +19,12 @@ describe("POST /api/v1/caixa/[id]/fechar", () => {
         saldo_inicial: 1000,
         conta_padrao: true,
       });
+
       const caixa = await orchestrator.createCaixa({
         user_id: user.id,
-        entrada: 1000,
         observacao_abertura: "Caixa aberto para teste de fechamento",
       });
+
       const response = await fetch(
         `http://localhost:3000/api/v1/caixa/${caixa.id}/fechar`,
         {
@@ -33,7 +34,7 @@ describe("POST /api/v1/caixa/[id]/fechar", () => {
             Cookie: `sid=${session.token}`,
           },
           body: JSON.stringify({
-            saldo_final_informado: 2000,
+            saldo_final_informado: 1000,
             observacao_fechamento: "Fechamento de caixa para teste",
           }),
         },
@@ -46,13 +47,13 @@ describe("POST /api/v1/caixa/[id]/fechar", () => {
         conta_id: conta.id,
         status: "FECHADO",
         relatorio: {
-          total_entrada: 1000,
+          total_entrada: 0,
           total_saida: 0,
-          quantidade_movimentacoes: 1,
+          quantidade_movimentacoes: 0,
         },
 
-        saldo_final_sistema: 2000,
-        saldo_final_informado: 2000,
+        saldo_final_sistema: 1000,
+        saldo_final_informado: 1000,
         diferenca: 0,
         fechado_em: responseBody.fechado_em,
         usuario_fechamento: { id: user.id, nome: user.nome },
@@ -65,14 +66,14 @@ describe("POST /api/v1/caixa/[id]/fechar", () => {
         movimentacoes: responseBody.movimentacoes,
       });
       expect(Array.isArray(responseBody.movimentacoes)).toBe(true);
-      expect(responseBody.movimentacoes.length).toBe(1);
-      expect(responseBody.movimentacoes.length).toBe(1);
+      expect(responseBody.movimentacoes.length).toBe(0);
+      expect(responseBody.movimentacoes.length).toBe(0);
       expect(Date.parse(responseBody.aberto_em)).not.toBeNaN();
       expect(Date.parse(responseBody.fechado_em)).not.toBeNaN();
 
       expect(response.status).toBe(201);
     });
-    test("Fechar caixa com diferenca de valor a menos", async () => {
+    test("Fechar caixa com falta de valor", async () => {
       const user = await orchestrator.createUser({
         nome: "ADMINISTRADOR",
       });
@@ -82,10 +83,24 @@ describe("POST /api/v1/caixa/[id]/fechar", () => {
         saldo_inicial: 1000,
         conta_padrao: true,
       });
+      const conta_origem = await orchestrator.createConta({
+        nome: "CONTA ORIGEM",
+        saldo_inicial: 1000,
+        conta_padrao: false,
+      });
+
       const caixa = await orchestrator.createCaixa({
         user_id: user.id,
-        entrada: 1000,
+
         observacao_abertura: "Caixa aberto para teste de fechamento",
+      });
+      const transferencia = await orchestrator.createTransferencia({
+        conta_origem_id: conta_origem.id,
+        conta_destino_id: conta.id,
+        valor: 1000,
+        user_id: user.id,
+        caixa_id: null,
+        descricao: "Transferencia para teste de fechamento de caixa",
       });
       const response = await fetch(
         `http://localhost:3000/api/v1/caixa/${caixa.id}/fechar`,
@@ -134,7 +149,7 @@ describe("POST /api/v1/caixa/[id]/fechar", () => {
 
       expect(response.status).toBe(201);
     });
-    test("Fechar caixa com diferenca de valor a mais", async () => {
+    test("Fechar caixa com sobra de valor", async () => {
       const user = await orchestrator.createUser({
         nome: "ADMINISTRADOR",
       });
@@ -144,10 +159,23 @@ describe("POST /api/v1/caixa/[id]/fechar", () => {
         saldo_inicial: 1000,
         conta_padrao: true,
       });
+      const conta_origem = await orchestrator.createConta({
+        nome: "CONTA ORIGEM",
+        saldo_inicial: 1000,
+        conta_padrao: false,
+      });
       const caixa = await orchestrator.createCaixa({
         user_id: user.id,
-        entrada: 1000,
+
         observacao_abertura: "Caixa aberto para teste de fechamento",
+      });
+      await orchestrator.createTransferencia({
+        conta_origem_id: conta_origem.id,
+        conta_destino_id: conta.id,
+        valor: 1000,
+        user_id: user.id,
+        caixa_id: null,
+        descricao: "Transferencia para teste de fechamento de caixa",
       });
       const response = await fetch(
         `http://localhost:3000/api/v1/caixa/${caixa.id}/fechar`,

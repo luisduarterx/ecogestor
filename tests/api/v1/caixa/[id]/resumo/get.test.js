@@ -19,10 +19,22 @@ describe("GET /api/v1/caixa/[id]/resumo", () => {
         saldo_inicial: 1000,
         conta_padrao: true,
       });
+      const conta_origem = await orchestrator.createConta({
+        nome: "CONTA ORIGEM",
+        saldo_inicial: 1000,
+      });
       const caixa = await orchestrator.createCaixa({
         user_id: user.id,
-        entrada: 1000,
+
         observacao_abertura: "Caixa aberto para teste de fechamento",
+      });
+      await orchestrator.createTransferencia({
+        conta_origem_id: conta_origem.id,
+        conta_destino_id: conta.id,
+        valor: 1000,
+        user_id: user.id,
+        caixa_id: caixa.id,
+        descricao: "Transferencia para teste de resumo",
       });
       const response = await fetch(
         `http://localhost:3000/api/v1/caixa/${caixa.id}/resumo`,

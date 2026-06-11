@@ -12,6 +12,7 @@ import tabela from "models/tabelas";
 import contas from "models/contas";
 import categoriaLancamento from "models/categorias-lancamento";
 import caixa from "models/caixa";
+import movFinanceiras from "models/mov-financeiras";
 
 async function waitForAllServices() {
   await waitForWebServer();
@@ -32,6 +33,7 @@ async function waitForAllServices() {
   }
 }
 async function clearDatabase() {
+  await prisma.transferencias_financeiras.deleteMany();
   await prisma.movimentacoes_financeiras.deleteMany();
   await prisma.caixa.deleteMany();
   await prisma.categoria_lancamento.deleteMany();
@@ -87,6 +89,7 @@ async function seedDatabase() {
     "abrir:caixa",
     "fechar:caixa",
     "consultar:caixa",
+    "create:financeiro:transferencia",
   ];
   await prisma.perfis.upsert({
     where: {
@@ -213,6 +216,16 @@ async function createCaixa(caixaInputArguments) {
     observacao_abertura: caixaInputArguments.observacao_abertura,
   });
 }
+async function createTransferencia(transferenciaInputArguments) {
+  return await movFinanceiras.transferencia({
+    conta_origem_id: transferenciaInputArguments.conta_origem_id,
+    conta_destino_id: transferenciaInputArguments.conta_destino_id,
+    valor: transferenciaInputArguments.valor,
+    user_id: transferenciaInputArguments.user_id,
+    caixa_id: transferenciaInputArguments.caixa_id,
+    descricao: transferenciaInputArguments.descricao,
+  });
+}
 const orchestrator = {
   waitForAllServices,
   clearDatabase,
@@ -228,6 +241,7 @@ const orchestrator = {
   createConta,
   createCategoriaLancamento,
   createCaixa,
+  createTransferencia,
 };
 
 export default orchestrator;

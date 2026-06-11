@@ -195,7 +195,7 @@ model movimentacoes_financeiras{
   conta_id Int
   conta conta_financeira @relation(fields: [conta_id],references: [id])
   origem origem_movimentacao
-  origem_id Int
+  origem_id Int?
   descricao String
   direcao direcao_financeira
   valor Decimal @db.Decimal(10,2)
@@ -211,8 +211,8 @@ model movimentacoes_financeiras{
   estorno_de_id Int?
   estorno_de movimentacoes_financeiras? @relation("EstornoMovimentacao", fields: [estorno_de_id], references: [id])
   estornos movimentacoes_financeiras[] @relation("EstornoMovimentacao")
-  caixa_id Int
-  caixa caixa @relation(fields: [caixa_id],references: [id])
+  caixa_id Int?
+  caixa caixa? @relation(fields: [caixa_id],references: [id])
 }
 
 model transferencias_financeiras{
