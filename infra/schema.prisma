@@ -12,10 +12,15 @@ model users {
   email         String     @unique
   senha         String
   criado_em     DateTime   @default(now())
-  atualizado_em DateTime   @default(now())
+  atualizado_em DateTime   @updatedAt
   perfil_id     Int
   sessions      sessions[]
   perfil        perfis     @relation(fields: [perfil_id], references: [id])
+  lancamentos_financeiros lancamentos_financeiros[]
+  movimentacoes_financeiras movimentacoes_financeiras[]
+  transferencias_financeiras transferencias_financeiras[]
+  caixas_abertos caixa[] @relation("UsuarioAbertura")
+  caixas_fechados caixa[] @relation("UsuarioFechamento")
 }
 
 model sessions {
@@ -31,7 +36,7 @@ model perfis {
   id            Int      @id @default(autoincrement())
   nome          String
   permissoes    String[]
-  atualizado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
   usuarios      users[]
 }
 
@@ -54,15 +59,16 @@ model registros {
   cidade          String?
   estado          String?
   criado_em       DateTime      @default(now())
-  atualizado_em   DateTime      @default(now())
+  atualizado_em   DateTime      @updatedAt
   tabela_id       Int           @default(1)
   tabela          tabela        @relation(fields: [tabela_id], references: [id])
+  lancamentos lancamentos_financeiros[]
 }
 
 model categorias {
   id            Int        @id @default(autoincrement())
   nome          String
-  atualizado_em DateTime   @default(now())
+  atualizado_em DateTime   @updatedAt
   criado_em     DateTime   @default(now())
   status        Boolean    @default(true)
   materiais     material[]
@@ -74,7 +80,7 @@ model material {
   nome          String
   preco_venda   Decimal           @db.Decimal(10, 2)
   status        Boolean           @default(true)
-  atualizado_em DateTime          @default(now())
+  atualizado_em DateTime          @updatedAt
   criado_em     DateTime          @default(now())
   categoria     categorias        @relation(fields: [categoria_id], references: [id])
   tabelas       material_tabela[]
@@ -84,7 +90,7 @@ model tabela {
   id            Int               @id @default(autoincrement())
   nome          String
   criado_em     DateTime          @default(now())
-  atualizado_em DateTime          @default(now())
+  atualizado_em DateTime          @updatedAt
   materiais     material_tabela[]
   registros     registros[]
 }
@@ -94,7 +100,7 @@ model material_tabela {
   tabela_id     Int
   material_id   Int
   preco_compra  Decimal  @db.Decimal(10, 2)
-  atualizado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
   material      material @relation(fields: [material_id], references: [id])
   tabela        tabela   @relation(fields: [tabela_id], references: [id])
 }
@@ -102,4 +108,147 @@ model material_tabela {
 enum tipo_registro {
   F
   J
+}
+enum status_lancamento{
+  ABERTO
+  PAGO
+  CANCELADO
+}
+enum tipo_lancamento{
+  PAGAR
+  RECEBER
+}
+enum origem_movimentacao{
+  PEDIDO_COMPRA
+  PEDIDO_VENDA
+  TRANSFERENCIA
+  LANCAMENTO_PAGAR
+  LANCAMENTO_RECEBER
+  AJUSTE_MANUAL
+  ABERTURA_CAIXA
+  FECHAMENTO_CAIXA
+  ESTORNO
+}
+enum direcao_financeira{
+  ENTRADA
+  SAIDA
+}
+enum tipo_categoria {
+  RECEITA
+  DESPESA
+}
+enum status_caixa{
+  ABERTO
+  FECHADO
+}
+
+model conta_financeira{
+  id Int @id @default(autoincrement())
+  nome String @unique
+  criado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
+  conta_padrao Boolean @default(false)
+  saldo_atual Decimal @db.Decimal(10,2)
+  saldo_inicial Decimal @db.Decimal(10,2)
+  status Boolean @default(true)
+  movimentacoes movimentacoes_financeiras[]
+  transferencias_origem transferencias_financeiras[] @relation("ContaOrigem")
+  transferencias_destino transferencias_financeiras[] @relation("ContaDestino")
+  caixas caixa[]
+
+}
+model categoria_lancamento{
+  id Int @id @default(autoincrement())
+  nome String
+  criado_em DateTime @default(now())
+  tipo_categoria tipo_categoria
+  lancamentos lancamentos_financeiros[]
+
+}
+
+model lancamentos_financeiros{
+  id Int @id @default(autoincrement())
+  valor Decimal @db.Decimal(10,2)
+  descricao String
+  tipo tipo_lancamento
+  titulo String
+  parcela Int?
+  status status_lancamento
+  categoria_id Int
+  categoria categoria_lancamento @relation(fields: [categoria_id], references: [id])
+  vencimento DateTime 
+  data_baixa DateTime?
+  criado_em DateTime @default(now())
+  atualizado_em DateTime @updatedAt
+  desconto Decimal @default(0) @db.Decimal(10,2)
+  acrescimo Decimal @default(0) @db.Decimal(10,2)
+  user_id Int
+  usuario users @relation(fields: [user_id],references: [id])
+  movimentacoes movimentacoes_financeiras[]
+  registro_id  Int?       
+  registro     registros? @relation(fields: [registro_id], references: [id])
+  
+}
+
+model movimentacoes_financeiras{
+  id Int @id @default(autoincrement())
+  conta_id Int
+  conta conta_financeira @relation(fields: [conta_id],references: [id])
+  origem origem_movimentacao
+  origem_id Int?
+  descricao String
+  direcao direcao_financeira
+  valor Decimal @db.Decimal(10,2)
+  saldo Decimal @db.Decimal(10,2)
+  user_id Int
+  usuario users @relation(fields: [user_id], references: [id])
+  lancamento_id Int?
+  lancamento lancamentos_financeiros? @relation(fields: [lancamento_id],references: [id])
+  transferencia_id Int?
+  transferencia transferencias_financeiras? @relation(fields: [transferencia_id],references: [id])
+  motivo_ajuste String?
+  estornada Boolean @default(false)
+  estorno_de_id Int?
+  estorno_de movimentacoes_financeiras? @relation("EstornoMovimentacao", fields: [estorno_de_id], references: [id])
+  estornos movimentacoes_financeiras[] @relation("EstornoMovimentacao")
+  caixa_id Int?
+  caixa caixa? @relation(fields: [caixa_id],references: [id])
+}
+
+model transferencias_financeiras{
+  id Int @id @default(autoincrement())
+  conta_origem_id Int
+  conta_origem conta_financeira @relation("ContaOrigem", fields: [conta_origem_id],references: [id])
+  conta_destino_id Int
+  conta_destino conta_financeira @relation("ContaDestino",fields: [conta_destino_id],references: [id])
+  valor Decimal @db.Decimal(10,2)
+  descricao String
+  criado_em DateTime @default(now())
+  user_id Int
+  usuario users @relation(fields: [user_id],references: [id])
+  movimentacoes movimentacoes_financeiras[]
+  caixa_id Int?
+  caixa caixa? @relation(fields: [caixa_id],references: [id])
+}
+
+model caixa {
+  id Int @id @default(autoincrement())
+  conta_id Int
+  conta conta_financeira @relation(fields: [conta_id],references: [id])
+  usuario_abertura_id Int
+  usuario_abertura users @relation("UsuarioAbertura", fields: [usuario_abertura_id],references: [id])
+  usuario_fechamento_id Int?
+  usuario_fechamento users? @relation("UsuarioFechamento", fields: [usuario_fechamento_id],references: [id])
+  status status_caixa @default(ABERTO)
+  saldo_inicial Decimal @db.Decimal(10,2)
+  saldo_final_sistema Decimal? @db.Decimal(10,2)
+  saldo_final_informado Decimal? @db.Decimal(10,2)
+  diferenca Decimal? @db.Decimal(10,2)
+  aberto_em DateTime @default(now())
+  fechado_em DateTime?
+  observacao_abertura String?
+  observacao_fechamento String?
+  movimentacoes movimentacoes_financeiras[]
+  transferencias transferencias_financeiras[]
+
 }

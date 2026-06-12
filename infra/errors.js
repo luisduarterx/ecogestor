@@ -101,3 +101,20 @@ export class UnAuthorizedError extends Error {
     };
   }
 }
+export class ApplicationError extends Error {
+  constructor(message, action) {
+    super(message || "Ocorreu um erro durante a execução da aplicação.");
+    this.name = "ApplicationError";
+    this.action =
+      action || "Verifique o funcionamento da aplicação e tente novamente.";
+    this.statusCode = 409;
+  }
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      status_code: this.statusCode,
+    };
+  }
+}
